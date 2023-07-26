@@ -104,7 +104,7 @@ class RespuestaObjetivo (models.Model):
     class Meta:
         verbose_name_plural = "Respuestas a los Objetivos"
         verbose_name = "Respuesta al objetivo"   
-         
+      
 
 
 #### TABLA DE COMPETENCIAS
