@@ -1,14 +1,51 @@
-<h4>{{evaluacion}}</h4>
-<br><!-- your_template.html -->
-<form method="post">
-    {% csrf_token %}
-    {% for objetivo, form in forms %}
-        <h2>{{ objetivo }}</h2>
-        {% for field in form %}
-            <div>
-                {{ field.label_tag }}: {{ field }}
-            </div>
+{% if request.user.empleado %}
+    <h4>{{evaluacion}}</h4>
+    <br>
+    <form method="post">
+        {% csrf_token %}
+        {% for objetivo, form in forms %}
+            <h2>{{ objetivo }}</h2>
+            {% for field in form %}
+                <div>
+                    {{ field.label_tag }}: {{ field }}
+                </div>
+            {% endfor %}
         {% endfor %}
-    {% endfor %}
-    <input type="submit" value="Submit">
-</form>
+        <input type="submit" value="Submit">
+    </form>
+{% else %}
+        {% if request.user.lider %}
+            Evaluación: {{evaluacion}}
+            <br>
+
+            Lider: {{lider}}
+            <br>
+
+            {% for respuesta in respuestas_objetivo.all %}
+                {{respuesta.objetivo.nombre}}: {{respuesta.objetivo.descripcion}}
+                <br>
+                
+            {% endfor %}    
+
+
+        <form method="post">
+            {% csrf_token %}
+            {% for respuestaobjetivo, form in forms %}
+                <h2>{{ respuestaobjetivo }}
+                    respuesta del EMPLEADO:
+                    <br>
+                    {{respuestaobjetivo.resultado_empleado}}%
+                    <br>
+                    {{respuestaobjetivo.observaciones_empleado}}
+                </h2>
+                {% for field in form %}
+                    <div>
+                        {{ field.label_tag }}: {{ field }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            <input type="submit" value="Submit">
+        </form>
+        
+        {% endif %}
+{% endif %}

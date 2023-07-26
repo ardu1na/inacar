@@ -1,6 +1,6 @@
 
 from django.forms import ModelForm
-from indicadores.models import RespuestaObjetivo
+from indicadores.models import RespuestaObjetivo, RespuestaCompetencia
 
 
         
@@ -9,6 +9,12 @@ class RespuestaObjetivoEmpleadoForm(ModelForm):
     class Meta:
         model = RespuestaObjetivo
         fields = ['resultado_empleado', 'observaciones_empleado']        
+        
+class RespuestaObjetivoLiderForm(ModelForm):
+    
+    class Meta:
+        model = RespuestaObjetivo
+        fields = ['resultado_lider', 'observaciones_lider']        
         
 
 

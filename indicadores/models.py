@@ -98,7 +98,8 @@ class RespuestaObjetivo (models.Model):
     observaciones_lider = models.CharField(max_length=950, null=True, blank=True)
 
     resultado_lider = models.IntegerField(null=True, blank=True)
-    
+    def __str__ (self):
+            return f'{self.objetivo}' 
     
     class Meta:
         verbose_name_plural = "Respuestas a los Objetivos"

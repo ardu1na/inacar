@@ -1,45 +1,82 @@
 from django.shortcuts import render, redirect
 from indicadores.models import Evaluacion, RespuestaObjetivo
 from django.contrib.auth.decorators import login_required 
-from indicadores.forms import RespuestaObjetivoEmpleadoForm
+from indicadores.forms import RespuestaObjetivoEmpleadoForm, RespuestaObjetivoLiderForm
 from django.http import HttpResponse
 
 
 @login_required
-def evaluacion_empleado(request):
-    if request.user.empleado is not None:
+def evaluacion(request):
+    
+    # evaluacion para el empleado
+    
+        try:
         
-        empleado = request.user.empleado
-        if request.method == 'GET':
-            evaluacion = Evaluacion.objects.create(empleado=empleado)
+            empleado = request.user.empleado
+            if request.method == 'GET':
+                evaluacion = Evaluacion.objects.create(empleado=empleado)
 
-        objetivos = empleado.cargo.objetivos.all()
-        forms = []
-        for objetivo in objetivos:
-            form = RespuestaObjetivoEmpleadoForm(request.POST or None, prefix=f'objetivo_{objetivo.pk}')
-            forms.append((objetivo, form))
+            objetivos = empleado.cargo.objetivos.all()
+            forms = []
+            for objetivo in objetivos:
+                form = RespuestaObjetivoEmpleadoForm(request.POST or None, prefix=f'objetivo_{objetivo.pk}')
+                forms.append((objetivo, form))
 
-        if request.method == 'POST':
-            evaluacion = Evaluacion.objects.filter(empleado=empleado).last()
-            for objetivo, form in forms:
-                form = RespuestaObjetivoEmpleadoForm(request.POST, prefix=f'objetivo_{objetivo.pk}')
-                if form.is_valid():
-                    respuesta = form.save(commit=False)
-                    respuesta.objetivo = objetivo
-                    respuesta.evaluacion = evaluacion
-                    respuesta.save()
+            if request.method == 'POST':
+                evaluacion = Evaluacion.objects.filter(empleado=empleado).last()
+                for objetivo, form in forms:
+                    form = RespuestaObjetivoEmpleadoForm(request.POST, prefix=f'objetivo_{objetivo.pk}')
+                    if form.is_valid():
+                        respuesta = form.save(commit=False)
+                        respuesta.objetivo = objetivo
+                        respuesta.evaluacion = evaluacion
+                        respuesta.save()
 
-            return redirect('success')
+                return redirect('success')
 
-        context = {
-            'forms': forms,
-            'evaluacion': evaluacion,
-        }
+            context = {
+                'forms': forms,
+                'evaluacion': evaluacion,
+            }
 
-        template_name = 'indicadores/evaluacion.html'
-        return render(request, template_name, context)
-    else:
-        return HttpResponse('El usuario actual no es un empleado a evaluar')
+            template_name = 'indicadores/evaluacion.html'
+            return render(request, template_name, context)
+        except:
+            # evaluacion para el lider
+            if request.user.lider:
+                
+                lider = request.user.lider
+                evaluacion = Evaluacion.objects.last() 
+                # la evaluacion tiene que venir o de crear una nueva evaluacion por parte del lider y asignarla a sus empleados
+                # o de buscarla y viene con su pk, id. 
+                respuestas_objetivo = RespuestaObjetivo.objects.filter(evaluacion=evaluacion)
+                
+                forms = []                   
+                
+                for respuestaobjetivo in respuestas_objetivo:
+                    form = RespuestaObjetivoLiderForm(instance=respuestaobjetivo, prefix=f'respuestaobjetivo_{respuestaobjetivo.pk}')
+                    forms.append((respuestaobjetivo, form))
+
+                if request.method == 'POST':
+
+                    for respuestaobjetivo, form in forms:
+                        form = RespuestaObjetivoLiderForm(request.POST, instance=respuestaobjetivo, prefix=f'respuestaobjetivo_{respuestaobjetivo.pk}')
+                        if form.is_valid():
+                            respuesta.save()
+
+                            return redirect('success')
+                print(respuestas_objetivo)
+                context = {
+                    'lider': lider,
+                    'evaluacion': evaluacion,
+                    'respuestas_objetivo': respuestas_objetivo,
+                    'forms': forms
+                }
+
+                template_name = 'indicadores/evaluacion.html'
+                return render(request, template_name, context)
+            else:
+                return HttpResponse('El usuario actual no está asociado ni a un empleado ni a un lider')
     
 def success(request):
     return HttpResponse("formualrio enviado!")
