@@ -31,9 +31,11 @@ def evaluacion(request, id=None):
         try:
         
             empleado = request.user.empleado
+            
+            ### si hay id quiere decir que es para ver una evaluacion ya hecha en el pasado
             if id:
                 if request.method == 'GET':
-
+                    
                     evaluacion = Evaluacion.objects.get(id=id)
                     respuestas_objetivo = RespuestaObjetivo.objects.filter(evaluacion=evaluacion)
                     print(respuestas_objetivo)
