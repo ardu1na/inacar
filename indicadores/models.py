@@ -142,7 +142,11 @@ class Pregunta (models.Model):
         
         
         
-
+####### formulario de COMPETENCIAS POST
+                    ### todos tienen las mismas competencias excpeto "gestion humana"
+                    ## si es gestion_humana tiene una competencia
+                    ## gestion_humana es un cargo
+                    
 class RespuestaCompetencia (models.Model):
     evaluacion = models.ForeignKey(
                             Evaluacion, related_name="respuestas_competencia", on_delete=models.SET_NULL, null=True)

@@ -63,7 +63,6 @@ def evaluacion(request, id=None):
                 ######## formularios de comptencias get
                 preguntas = Pregunta.objects.all()
                 competencias = Competencia.objects.all()
-                
                 forms_competencia = []
                 for pregunta in preguntas:
                     form_competencia = RespuestaCompetenciaEmpleadoForm(request.POST or None, prefix=f'pregunta_{pregunta.pk}')
@@ -71,9 +70,11 @@ def evaluacion(request, id=None):
                 
                 ### POST GRAL
                 if request.method == 'POST':
+                    # se obtiene la evaluacion particular
                     evaluacion = Evaluacion.objects.filter(empleado=empleado).last()
+                    
+                    
                     ####### formulario de objetivos post
-                    ### para recibir formularios de objetivo:
                     if 'objetivo' in request.POST:
                         print('objetivo')
                         for objetivo, form_objetivo in forms_objetivo:
@@ -83,7 +84,21 @@ def evaluacion(request, id=None):
                                 respuesta.objetivo = objetivo
                                 respuesta.evaluacion = evaluacion
                                 respuesta.save()
-
+                                
+                    ####### formulario de COMPETENCIAS POST
+                    ### todos tienen las mismas competencias excpeto "gestion humana"
+                    ## si es gestion_humana tiene una competencia
+                    ## gestion_humana es un cargo
+                    if 'competencia' in request.POST:
+                        print('competencia')
+                        for competencia, form_competencia in forms_competencia:
+                            form_competencia = RespuestaCompetenciaEmpleadoForm(request.POST, prefix=f'competencia_{competencia.pk}')
+                            if form_competencia.is_valid():
+                                respuesta = form_competencia.save(commit=False)
+                                
+                                respuesta.pregunta = competencia
+                                respuesta.evaluacion = evaluacion
+                                respuesta.save()
                     return redirect('success')
         
 
