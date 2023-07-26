@@ -113,7 +113,9 @@ class Competencia (models.Model):
     definicion = models.CharField(max_length=950)
     
     def __str__ (self):
-        return f'{self.nombre}'       
+        return f'{self.nombre}'   
+    
+        
 
 class Pregunta (models.Model):
     competencia = models.ForeignKey(Competencia, related_name="preguntas", on_delete=models.SET_NULL, null=True)
@@ -125,6 +127,9 @@ class Pregunta (models.Model):
     
     class Meta:
         verbose_name = "Definición"
+        
+        
+        
 
 class RespuestaCompetencia (models.Model):
     evaluacion = models.ForeignKey(

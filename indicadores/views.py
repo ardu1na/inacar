@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
-from indicadores.models import Evaluacion, RespuestaObjetivo
+from indicadores.models import Evaluacion, RespuestaObjetivo, Competencia, Pregunta
 from django.contrib.auth.decorators import login_required 
-from indicadores.forms import RespuestaObjetivoEmpleadoForm, RespuestaObjetivoLiderForm
+from indicadores.forms import RespuestaObjetivoEmpleadoForm, RespuestaObjetivoLiderForm, \
+    RespuestaCompetenciaEmpleadoForm, RespuestaCompetenciaLiderForm
 from django.http import HttpResponse
 
 
@@ -51,33 +52,57 @@ def evaluacion(request, id=None):
                     
             else: # para empezar una nueva evaluación
                 evaluacion = Evaluacion.objects.create(empleado=empleado, lider=empleado.lider)
+                
+                ######## formularios de objetivos get
                 objetivos = empleado.cargo.objetivos.all()
                 forms_objetivo = []
                 for objetivo in objetivos:
                     form_objetivo = RespuestaObjetivoEmpleadoForm(request.POST or None, prefix=f'objetivo_{objetivo.pk}')
                     forms_objetivo.append((objetivo, form_objetivo))
-
+                    
+                ######## formularios de comptencias get
+                preguntas = Pregunta.objects.all()
+                competencias = Competencia.objects.all()
+                
+                forms_competencia = []
+                for pregunta in preguntas:
+                    form_competencia = RespuestaCompetenciaEmpleadoForm(request.POST or None, prefix=f'pregunta_{pregunta.pk}')
+                    forms_competencia.append((pregunta, form_competencia))
+                
+                ### POST GRAL
                 if request.method == 'POST':
                     evaluacion = Evaluacion.objects.filter(empleado=empleado).last()
-                    for objetivo, form_objetivo in forms_objetivo:
-                        form_objetivo = RespuestaObjetivoEmpleadoForm(request.POST, prefix=f'objetivo_{objetivo.pk}')
-                        if form_objetivo.is_valid():
-                            respuesta = form_objetivo.save(commit=False)
-                            respuesta.objetivo = objetivo
-                            respuesta.evaluacion = evaluacion
-                            respuesta.save()
+                    ####### formulario de objetivos post
+                    ### para recibir formularios de objetivo:
+                    if 'objetivo' in request.POST:
+                        print('objetivo')
+                        for objetivo, form_objetivo in forms_objetivo:
+                            form_objetivo = RespuestaObjetivoEmpleadoForm(request.POST, prefix=f'objetivo_{objetivo.pk}')
+                            if form_objetivo.is_valid():
+                                respuesta = form_objetivo.save(commit=False)
+                                respuesta.objetivo = objetivo
+                                respuesta.evaluacion = evaluacion
+                                respuesta.save()
 
                     return redirect('success')
-
         
 
                 context = {
                     'forms_objetivo': forms_objetivo,
                     'evaluacion': evaluacion,
+                    'forms_competencia': forms_competencia
                 }
 
             template_name = 'indicadores/evaluacion.html'
             return render(request, template_name, context)
+        
+        
+        
+        
+        
+        
+        
+        #### si el usuario es lider
         except:
             # evaluacion para el lider
             if request.user.lider:

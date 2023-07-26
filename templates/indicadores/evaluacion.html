@@ -1,6 +1,8 @@
+{% comment "" %} si el usuario es empleado {% endcomment %}
 {% if request.user.empleado %}
     <h4>{{evaluacion}}</h4>
     <br>
+    {% comment "" %} para ver una instancia ya resuleta de evaluacion {% endcomment %}
     {% if 'id' in request.resolver_match.kwargs %}
         {% for respuesta_objetivo in evaluacion.respuestas_objetivo.all %}
             {{respuesta_objetivo.objetivo}}: {{respuesta_objetivo.resultado_empleado}}% <br>
@@ -18,7 +20,8 @@
     {% else %}
         <form method="post">
             {% csrf_token %}
-            {% for objetivo, form in forms %}
+            
+            {% for objetivo, form in forms_objetivo %}
                 <h2>{{ objetivo }}</h2>
                 {% for field in form %}
                     <div>
@@ -26,13 +29,16 @@
                     </div>
                 {% endfor %}
             {% endfor %}
-            <input type="submit" value="Submit">
+
+
+
+            <input type="submit" value="Submit" name="objetivo">
         </form>
     {% endif %}
 
 
 
-
+{% comment "" %} si el usuario es lider {% endcomment %}
     
 {% else %}
         {% if request.user.lider %}
@@ -51,7 +57,7 @@
 
         <form method="post">
             {% csrf_token %}
-            {% for respuestaobjetivo, form in forms %}
+            {% for respuestaobjetivo, form in forms_objetivo %}
                 <h2>{{ respuestaobjetivo }}
                     respuesta del EMPLEADO:
                     <br>
