@@ -1,39 +1,46 @@
 {% comment "" %} si el usuario es empleado {% endcomment %}
 {% if request.user.empleado %}
+    
     <h4>{{evaluacion}}</h4>
     <br>
     {% comment "" %} para ver una instancia ya resuleta de evaluacion {% endcomment %}
     {% if 'id' in request.resolver_match.kwargs %}
-        {% for respuesta_objetivo in evaluacion.respuestas_objetivo.all %}
-            {{respuesta_objetivo.objetivo}}: {{respuesta_objetivo.resultado_empleado}}% <br>
-            {{respuesta_objetivo.observaciones_empleado}}<br>
-                
-            {% if respuesta_objetivo.observaciones_lider %}
-                Respuestas del lider {{respuesta_objetivo.evaluacion.lider}}:<br>
-                {{respuesta_objetivo.observaciones_lider}}%<br>
-                {{respuesta_objetivo.resultado_lider}}
-            {% else %}
-                <h4>El líder aún no ha respondido </h4>
-            {% endif %}
 
-        {% endfor %}
-    {% else %}
-        <form method="post">
-            {% csrf_token %}
-            
-            {% for objetivo, form in forms_objetivo %}
-                <h2>{{ objetivo }}</h2>
-                {% for field in form %}
-                    <div>
-                        {{ field.label_tag }}: {{ field }}
-                    </div>
-                {% endfor %}
+            {% for respuesta_objetivo in evaluacion.respuestas_objetivo.all %}
+                {{respuesta_objetivo.objetivo}}: {{respuesta_objetivo.resultado_empleado}}% <br>
+                {{respuesta_objetivo.observaciones_empleado}}<br>
+                    
+                {% if respuesta_objetivo.observaciones_lider %}
+                    Respuestas del lider {{respuesta_objetivo.evaluacion.lider}}:<br>
+                    {{respuesta_objetivo.observaciones_lider}}%<br>
+                    {{respuesta_objetivo.resultado_lider}}
+                {% else %}
+                    <h4>El líder aún no ha respondido </h4>
+                {% endif %}    
             {% endfor %}
 
+    {% else %}
+
+            <form method="post">
+                {% csrf_token %}
+                
+                {% for objetivo, form in forms_objetivo %}
+                    <h2>{{ objetivo }}</h2>
+                    {% for field in form %}
+                        <div>
+                            {{ field.label_tag }}: {{ field }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
 
 
-            <input type="submit" value="Submit" name="objetivo">
-        </form>
+
+                <input type="submit" value="Submit" name="objetivo">
+            </form>
+
+            
+
+
     {% endif %}
 
 

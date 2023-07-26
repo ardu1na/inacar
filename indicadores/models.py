@@ -4,14 +4,17 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 class NivelAdministrativo(models.Model):
-    Id_NivelAdministrativo = models.AutoField(auto_created=True, primary_key=True)
-    niveladministrativonombre = models.CharField(max_length=230, null=False)
+    # operativo ------------ solo compentencias   
+    ## tienen diferentes objetivos en funcióno del carggo
+    # estrategico -------------- con objetivos y comptencias
+    ## tactico --------------- con objetivos competencas
+    nombre = models.CharField(max_length=230, null=False)
     def __str__(self):
-        return self.niveladministrativonombre
-    
+        return self.nombre
     
 class Cargo(models.Model):
     nombre = models.CharField(max_length=230, null=False)
+    
     def __str__(self):
         return self.nombre
 
@@ -25,15 +28,25 @@ class Lider(models.Model):
 
 
 class Empleado(models.Model):
-    user = models.OneToOneField(User, related_name="empleado", on_delete=models.CASCADE)
-    cargo = models.ForeignKey(Cargo, on_delete=models.CASCADE, related_name="empleados", null=True, blank=False)
-    lider = models.ForeignKey(Lider, on_delete=models.CASCADE, null=True, related_name="empleados", blank=False)
-    nivel_administrativo = models.ForeignKey(NivelAdministrativo, on_delete=models.CASCADE, null=True, related_name="empleados", blank=False)
-    regional = models.ForeignKey('Regional', related_name="empleados", on_delete=models.SET_NULL, null=True)    
+    user = models.OneToOneField(
+                User, related_name="empleado", on_delete=models.CASCADE
+                )
+    cargo = models.ForeignKey(
+                    Cargo, on_delete=models.CASCADE, related_name="empleados", null=True, blank=False
+                    )
+    nivel_administrativo = models.ForeignKey(
+                    NivelAdministrativo, on_delete=models.CASCADE, null=True, related_name="empleados", blank=False
+                    )
+    lider = models.ForeignKey(
+                    Lider, on_delete=models.CASCADE, null=True, related_name="empleados", blank=False
+                    )
+    
+    regional = models.ForeignKey(
+                    'Regional', related_name="empleados", on_delete=models.SET_NULL, null=True
+                    )    
 
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name}'
-
 
 
 #### INFO DE LA EVALUACION
@@ -46,7 +59,6 @@ class Regional (models.Model):
     class Meta:
         verbose_name = "Regional/Operación"
         verbose_name_plural = "Regionales/Operaciones"
-
   
     
 #### INSTANCIA DE EVALUACION      
@@ -61,7 +73,7 @@ class Evaluacion (models.Model):
                                 default=date.today())
     
     def __str__ (self):
-        return f'Evaluación de {self.empleado} {self.fecha}'
+        return f'Evaluación {self.id} de {self.empleado} {self.fecha}'
     
     class Meta:
         verbose_name_plural = "Evaluaciones"
