@@ -85,11 +85,11 @@ class Objetivo (models.Model):
         
 class RespuestaObjetivo (models.Model):
     
-    objetivo = models.OneToOneField(
-                            Objetivo, related_name="respuesta", on_delete=models.CASCADE)
+    objetivo = models.ForeignKey(
+                            Objetivo, related_name="respuesta", on_delete=models.CASCADE )
     
     evaluacion = models.ForeignKey(Evaluacion,
-                                   related_name="respuestas_objetivo", on_delete=models.SET_NULL, null=True)
+                                   related_name="respuestas_objetivo", on_delete=models.CASCADE)
     
     observaciones_empleado = models.CharField(max_length=950, null=True, blank=True)
 

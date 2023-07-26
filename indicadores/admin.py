@@ -1,12 +1,12 @@
 from django.contrib import admin
 from indicadores.models import RespuestaCompetencia, Pregunta, \
     Competencia, RespuestaObjetivo, Objetivo, Evaluacion,\
-    Regional, Empleado, Lider, Cargo, NivelAdministrativo
+    Regional, Empleado, Lider, Cargo
         
 admin.site.register(Empleado)
 admin.site.register(Lider)
 admin.site.register(Cargo)
-admin.site.register(NivelAdministrativo)
+admin.site.register(RespuestaObjetivo)
 
 class PreguntaInline(admin.StackedInline):
     model = Pregunta
