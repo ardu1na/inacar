@@ -33,7 +33,7 @@ def evaluacion(request, id=None):
             empleado = request.user.empleado
             
             ### si hay id quiere decir que es para ver una evaluacion ya hecha en el pasado
-            if id:
+            if id: # para ver una evaluación ya realizada
                 if request.method == 'GET':
                     
                     evaluacion = Evaluacion.objects.get(id=id)
@@ -49,20 +49,20 @@ def evaluacion(request, id=None):
                 print(f'se ha obtenido la instancia de evaluacion {evaluacion} id:{evaluacion.id}')
                     
                     
-            else:
+            else: # para empezar una nueva evaluación
                 evaluacion = Evaluacion.objects.create(empleado=empleado, lider=empleado.lider)
                 objetivos = empleado.cargo.objetivos.all()
-                forms = []
+                forms_objetivo = []
                 for objetivo in objetivos:
-                    form = RespuestaObjetivoEmpleadoForm(request.POST or None, prefix=f'objetivo_{objetivo.pk}')
-                    forms.append((objetivo, form))
+                    form_objetivo = RespuestaObjetivoEmpleadoForm(request.POST or None, prefix=f'objetivo_{objetivo.pk}')
+                    forms_objetivo.append((objetivo, form_objetivo))
 
                 if request.method == 'POST':
                     evaluacion = Evaluacion.objects.filter(empleado=empleado).last()
-                    for objetivo, form in forms:
-                        form = RespuestaObjetivoEmpleadoForm(request.POST, prefix=f'objetivo_{objetivo.pk}')
-                        if form.is_valid():
-                            respuesta = form.save(commit=False)
+                    for objetivo, form_objetivo in forms_objetivo:
+                        form_objetivo = RespuestaObjetivoEmpleadoForm(request.POST, prefix=f'objetivo_{objetivo.pk}')
+                        if form_objetivo.is_valid():
+                            respuesta = form_objetivo.save(commit=False)
                             respuesta.objetivo = objetivo
                             respuesta.evaluacion = evaluacion
                             respuesta.save()
@@ -72,7 +72,7 @@ def evaluacion(request, id=None):
         
 
                 context = {
-                    'forms': forms,
+                    'forms_objetivo': forms_objetivo,
                     'evaluacion': evaluacion,
                 }
 
@@ -88,18 +88,18 @@ def evaluacion(request, id=None):
                 # o de buscarla y viene con su pk, id. 
                 respuestas_objetivo = RespuestaObjetivo.objects.filter(evaluacion=evaluacion)
                 
-                forms = []                   
+                forms_objetivo = []                   
                 
                 for respuestaobjetivo in respuestas_objetivo:
-                    form = RespuestaObjetivoLiderForm(instance=respuestaobjetivo, prefix=f'respuestaobjetivo_{respuestaobjetivo.pk}')
-                    forms.append((respuestaobjetivo, form))
+                    form_objetivo = RespuestaObjetivoLiderForm(instance=respuestaobjetivo, prefix=f'respuestaobjetivo_{respuestaobjetivo.pk}')
+                    forms_objetivo.append((respuestaobjetivo, form_objetivo))
 
                 if request.method == 'POST':
 
-                    for respuestaobjetivo, form in forms:
-                        form = RespuestaObjetivoLiderForm(request.POST, instance=respuestaobjetivo, prefix=f'respuestaobjetivo_{respuestaobjetivo.pk}')
-                        if form.is_valid():
-                            form.save()
+                    for respuestaobjetivo, form_objetivo in forms_objetivo:
+                        form_objetivo = RespuestaObjetivoLiderForm(request.POST, instance=respuestaobjetivo, prefix=f'respuestaobjetivo_{respuestaobjetivo.pk}')
+                        if form_objetivo.is_valid():
+                            form_objetivo.save()
 
                     return redirect('success')
                 print(respuestas_objetivo)
@@ -107,7 +107,7 @@ def evaluacion(request, id=None):
                     'lider': lider,
                     'evaluacion': evaluacion,
                     'respuestas_objetivo': respuestas_objetivo,
-                    'forms': forms
+                    'forms_objetivo': forms_objetivo
                 }
 
                 template_name = 'indicadores/evaluacion.html'
