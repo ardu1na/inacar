@@ -1,0 +1,64 @@
+# 23/7/2023
+# evaluacion y presentación del proyecto - presupuesto
+# precio x hora: 10 usd
+# tiempo estimado: 1 a 2 semanas
+# 
+
+# 24/7/2023
+# aprobación del presupuesto 100% 200 usd (1 semana de 5 dias, 4 hs x día o 20 hs )
+# 30 % + 10 usd al inicio = 70 usd
+# 70 % al terminar $ 130 
+
+############################################################################ 25/7/2023
+# pago 70 usd
+# el tiempo estimado se cancela
+# 16 hs a 20 hs argentina - 4 horas
+# app indicadores
+# 
+
+
+#########################################
+# diseño de bases de datos
+#
+# MODELOS
+
+# Los MODELOS son clases heredadas de django
+# Las clases de python se escriben en singular (perro, no perros)
+# y con la primera letra en mayúscula: Perro
+
+# ej:
+#   class Perro(models.Model):
+#          nombre = ... <---- VARIABLES
+#                               # van en minúscula    
+                                #  no necesitan tener el nombre de la clase:
+                                                                   # ej: NO perro_nombre.
+                                # para acceder al  nombre del perro hacés : perro.nombre
+#                        
+# NO -->   id ---> no es necesario añadir el campo ID. django lo crea solo
+            # para acceder al id del Perro hacés perro.id
+
+
+
+
+#############################################
+#### SINTAXIS
+## Estándares de sintaxis Python https://peps.python.org/pep-0020/
+
+# Ñ: no podés usar ñ solamente se pueden usar en strings
+# tampoco acentos
+# ej:
+#            niandu = "ñandú"
+#
+## en este ejemplo la variable no tiene ni ñ ni acento, está correctamente escrita
+# el string, entre comillas, sí tiene acento y sí tiene ñ. está correctamente escrito
+
+             
+
+
+
+
+
+########## # 26/7/2023
+# 10 hs a 13 hs argentina 3 horas
+
+
