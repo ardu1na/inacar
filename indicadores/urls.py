@@ -20,7 +20,7 @@ urlpatterns = [
     
     path('lider/evaluacion/<int:id>/',views.responder_evaluacion, name="evaluacion_lider"),
     
-    path('lider/evaluacion/<int:id>/continuar/',views.comptencia_lider, name="comptencia_lider"),
+    path('lider/evaluacion/<int:id>/continuar/',views.evaluacion_competencia_lider, name="evaluacion_competencia_lider"),
     
     
 
