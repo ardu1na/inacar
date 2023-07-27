@@ -171,7 +171,7 @@ def responder_evaluacion(request, id):
     
         context = {
                 'lider': lider,
-                'forms_comptencia': forms_objetivo,          
+                'forms_objetivo': forms_objetivo,          
             }
     
     else:
