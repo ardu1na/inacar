@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
-from indicadores.models import Evaluacion, RespuestaObjetivo, Competencia, Pregunta
+from indicadores.models import Evaluacion, RespuestaObjetivo, \
+    Competencia, Pregunta, RespuestaCompetencia
 from django.contrib.auth.decorators import login_required 
 from indicadores.forms import RespuestaObjetivoEmpleadoForm, RespuestaObjetivoLiderForm, \
     RespuestaCompetenciaEmpleadoForm, RespuestaCompetenciaLiderForm
 from django.http import HttpResponse
-
+from django.urls import reverse
 
 
 @login_required
@@ -38,16 +39,35 @@ def evaluacion(request, id=None):
                 if request.method == 'GET':
                     
                     evaluacion = Evaluacion.objects.get(id=id)
-                    respuestas_objetivo = RespuestaObjetivo.objects.filter(evaluacion=evaluacion)
-                    print(respuestas_objetivo)
+                    forms_competencia = []                   
+    
+                    if "changed" in request.GET: ###############################################################################################################33
+                        respuestas_competencia = RespuestaCompetencia.objects.filter(evaluacion=evaluacion)
                         
                         
+                        for respuesta_competencia in respuestas_competencia:
+                            form_competencia = RespuestaCompetenciaEmpleadoForm(instance=respuesta_competencia, prefix=f'respuesta_competencia_{respuesta_competencia.pk}')
+                            forms_competencia.append((respuesta_competencia, form_competencia))
+
+                if request.method == 'POST':
+
+                    for respuesta_competencia, form_competencia in forms_competencia:
+                        form_competencia = RespuestaCompetenciaEmpleadoForm(request.POST, instance=respuesta_competencia, prefix=f'respuesta_competencia_{respuesta_competencia.pk}')
+                        if form_competencia.is_valid():
+                            form_competencia.save()
+
+                    return redirect('evaluaciones_empleado')
+            
+                                    
                 context = {
                     'evaluacion': evaluacion,
-                    
+                    'forms_competencia': forms_competencia,
                 }
                         
                 print(f'se ha obtenido la instancia de evaluacion {evaluacion} id:{evaluacion.id}')
+                    
+                    
+                    
                     
                     
             else: # para empezar una nueva evaluación
@@ -84,7 +104,8 @@ def evaluacion(request, id=None):
                                 respuesta.objetivo = objetivo
                                 respuesta.evaluacion = evaluacion
                                 respuesta.save()
-                                
+                        return redirect(reverse('evaluacion', id=evaluacion.id)+ "?changed")
+
                     ####### formulario de COMPETENCIAS POST
                     ### todos tienen las mismas competencias excpeto "gestion humana"
                     ## si es gestion_humana tiene una competencia
@@ -99,8 +120,8 @@ def evaluacion(request, id=None):
                                 respuesta.pregunta = competencia
                                 respuesta.evaluacion = evaluacion
                                 respuesta.save()
-                    return redirect('success')
-        
+                                
+                        return redirect('evaluaciones_empleado')
 
                 context = {
                     'forms_objetivo': forms_objetivo,

@@ -5,7 +5,8 @@
     <br>
     {% comment "" %} para ver una instancia ya resuleta de evaluacion {% endcomment %}
     {% if 'id' in request.resolver_match.kwargs %}
-
+            {% comment "" %} ver objetivos ya enviados {% endcomment %}
+            objetivos:
             {% for respuesta_objetivo in evaluacion.respuestas_objetivo.all %}
                 {{respuesta_objetivo.objetivo}}: {{respuesta_objetivo.resultado_empleado}}% <br>
                 {{respuesta_objetivo.observaciones_empleado}}<br>
@@ -18,6 +19,26 @@
                     <h4>El líder aún no ha respondido </h4>
                 {% endif %}    
             {% endfor %}
+
+
+            {% comment "" %} responder competencias luego de enviar objetivos {% endcomment %}
+            responder competencias:
+            <form method="post">
+                {% csrf_token %}
+                
+                {% for pregunta, form in forms_competencia %}
+                    <h2>{{ pregunta }}</h2>
+                    {% for field in form %}
+                        <div>
+                            {{ field.label_tag }}: {{ field }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+
+
+
+                <input type="submit" value="Submit" name="competencia">
+            </form>
 
     {% else %}
         {% comment "" %} RESPONDER NUEVA evaluacion {% endcomment %}

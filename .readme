@@ -18,7 +18,6 @@
 # 
 
 
-#########################################
 # diseño de bases de datos
 #
 # MODELOS
@@ -41,7 +40,6 @@
 
 
 
-#############################################
 #### SINTAXIS
 ## Estándares de sintaxis Python https://peps.python.org/pep-0020/
 
