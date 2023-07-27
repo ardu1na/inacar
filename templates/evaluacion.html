@@ -26,9 +26,9 @@
             <form method="post">
                 {% csrf_token %}
                 
-                {% for pregunta, form in forms_competencia %}
-                    <h2>{{ pregunta }}</h2>
-                    {% for field in form %}
+                {% for pregunta_competencia, form_competencia in forms_competencia %}
+                    <h2>{{ pregunta_competencia }}</h2>
+                    {% for field in form_competencia %}
                         <div>
                             {{ field.label_tag }}: {{ field }}
                         </div>

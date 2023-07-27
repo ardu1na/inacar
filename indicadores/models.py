@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 class NivelAdministrativo(models.Model):
     # operativo ------------ solo compentencias   
+    
     ## tienen diferentes objetivos en funcióno del carggo
     # estrategico -------------- con objetivos y comptencias
     ## tactico --------------- con objetivos competencas

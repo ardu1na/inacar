@@ -1,9 +1,9 @@
     <h4>HOLA {{empleado}}</h4>
-    <a href="{% url 'evaluacion_nueva' %}"> ++ NUEVA</a>
+    <a href="{% url 'nueva_evaluacion' %}"> ++ NUEVA</a>
 
     <br>
     {% for evaluacion in evaluaciones.all %}
-    <a href="{% url 'evaluacion' id=evaluacion.id %}">{{evaluacion}}</a>
+    <a href="#">{{evaluacion}}</a>
     {% endfor %}
 
 
