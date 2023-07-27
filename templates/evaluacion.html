@@ -90,37 +90,6 @@
     
 {% else %}
         {% if request.user.lider %}
-            Evaluación: {{evaluacion}}
-            <br>
-
-            Lider: {{lider}}
-            <br>
-
-            {% for respuesta in respuestas_objetivo.all %}
-                {{respuesta.objetivo.nombre}}: {{respuesta.objetivo.descripcion}}
-                <br>
-                
-            {% endfor %}    
-
-
-        <form method="post">
-            {% csrf_token %}
-            {% for respuestaobjetivo, form in forms_objetivo %}
-                <h2>{{ respuestaobjetivo }}
-                    respuesta del EMPLEADO:
-                    <br>
-                    {{respuestaobjetivo.resultado_empleado}}%
-                    <br>
-                    {{respuestaobjetivo.observaciones_empleado}}
-                </h2>
-                {% for field in form %}
-                    <div>
-                        {{ field.label_tag }}: {{ field }}
-                    </div>
-                {% endfor %}
-            {% endfor %}
-            <input type="submit" value="Submit">
-        </form>
-        
+         
         {% endif %}
 {% endif %}

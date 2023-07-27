@@ -1,7 +1,7 @@
 from django.db import models
 from datetime import date
 from django.contrib.auth.models import User
-# Create your models here.
+
 
 class NivelAdministrativo(models.Model):
     # operativo ------------ solo compentencias   
@@ -27,6 +27,16 @@ class Lider(models.Model):
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name}'
 
+    @property
+    def es_director(self):
+        if self.user.empleado:
+            return False
+        else:
+            return True
+        
+    @property
+    def get_nombre(self):
+        return self.user.get_full_name
 
 class Empleado(models.Model):
     user = models.OneToOneField(

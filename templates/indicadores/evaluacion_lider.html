@@ -1,0 +1,52 @@
+    
+   Evaluación: {{evaluacion}}
+   <br>
+
+   Lider: {{lider}}
+   <br>
+
+   {% if forms_objetivo %}
+   formulario de objetivos
+
+
+        <form method="post">
+        {% csrf_token %}
+        {% for respuestaobjetivo, form in forms_objetivo %}
+            <h2>{{ respuestaobjetivo }}
+                respuesta del EMPLEADO:
+                <br>
+                {{respuestaobjetivo.resultado_empleado}}%
+                <br>
+                {{respuestaobjetivo.observaciones_empleado}}
+            </h2>
+            {% for field in form %}
+                <div>
+                    {{ field.label_tag }}: {{ field }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+        <input type="submit" value="Submit" name="objetivo">
+        </form>
+
+
+
+{% else %}
+    formulario de competencias
+
+    <form method="post">
+        {% csrf_token %}
+        
+        {% for pregunta, form_competencia in forms_comptencia %}
+            <h2>{{ pregunta }}</h2>
+            {% for field in form_competencia %}
+                <div>
+                    {{ field.label_tag }}: {{ field }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+
+
+        <input type="submit" value="Submit" name="competencia">
+    </form>
+{% endif %}
