@@ -29,10 +29,7 @@ admin.site.register(Competencia, CompetenciaAdmin)
 
 
 
-
-class LiderAdmin(admin.ModelAdmin):
-    list_display = ['get_nombre', 'es_director']
-admin.site.register(Lider, LiderAdmin)
+admin.site.register(Lider)
 
 
 

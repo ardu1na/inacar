@@ -27,12 +27,6 @@ class Lider(models.Model):
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name}'
 
-    @property
-    def es_director(self):
-        if self.user.empleado:
-            return False
-        else:
-            return True
         
     @property
     def get_nombre(self):

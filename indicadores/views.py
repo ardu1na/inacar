@@ -167,7 +167,7 @@ def responder_evaluacion(request, id):
                 if form_objetivo.is_valid():
                     form_objetivo.save()
 
-            return redirect('evaluacion_competencia_lider', id=evaluacion.id)
+            return redirect('comptencia_lider', id=evaluacion.id)
     
         context = {
                 'lider': lider,
@@ -204,7 +204,7 @@ def responder_evaluacion(request, id):
 
 
 @login_required
-def evaluacion_competencia_lider(request, id):
+def comptencia_lider(request, id):
     
     lider = request.user.lider
     evaluacion = Evaluacion.objects.get(id=id)
