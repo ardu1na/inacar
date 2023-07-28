@@ -19,15 +19,28 @@ from django.http import HttpResponse
 
 
 # resultado objetivo final:   promedio de todos los objetvios 
+
+# evaluacion.get_promedio: respuesta_objetivos
+
+
 # resultado final compentencias: promedios de las competencias
 
 # RESULTADO FINALA TOTAL: %80 objetivo %20 compentecias
 
 # resultado competencia final:  
 
+
+
+
 ## RESULTADO TOTAL (objetivo+compentecia)
 
 ## la comptencia tiene subcompetencia y hay que calcular primero un % x competnecia 
+
+
+
+# evaluacion.respuestacompetnecia
+# 
+
 
 # del ev y del evdor
 # x semestre
@@ -50,6 +63,13 @@ def evaluaciones_empleado(request):
 
     template_name = 'indicadores/empleado_evaluaciones.html'
     return render(request, template_name, context)
+
+
+
+
+
+
+
 
 @login_required 
 def nueva_evaluacion(request):

@@ -100,14 +100,20 @@ class Evaluacion (models.Model):
     class Meta:
         verbose_name_plural = "Evaluaciones"
         
-   
-        
+    @property
+    def get_competencias(self):
+        competencias = []
+        for respuesta in self.respuestas_competencia.all():
+            if respuesta.pregunta.competencia not in competencias:
+                competencias.append(respuesta)
+        return competencias
         
     @property
     def get_porcentaje_respuestas_objetivo_evaluado(self):
         
         objetivo_total=0
-        n_respuestas = self.respuestas_objetivo.count()    
+        n_respuestas = 0
+        
         if n_respuestas is None:
             return 0 
         
@@ -116,16 +122,17 @@ class Evaluacion (models.Model):
         # Calcular el porcentaje total
         else:
             for respuesta in self.respuestas_objetivo.all():
-                objetivo_total  += respuesta.resultado_evaluado
-        
+                if respuesta.resultado_evaluado is None:
+                    pass
+                else:
+                    objetivo_total  += respuesta.resultado_evaluado
+                    n_respuestas +=1
+                    
             porcentaje_total = (objetivo_total / n_respuestas) 
         
             return porcentaje_total
-
-        #### cuando lo quieras renderizar en el template pones:{{evaluacion.get_porcentaje_respuestas_objetivo_evaluado|floatformat:2}}
-
-
-            
+        #### cuando lo quieras renderizar en el template pones:{{evaluacion.get_porcentaje_respuestas_objetivo_evaluador|floatformat:2}}        
+     
         
     @property
     def get_porcentaje_respuestas_objetivo_evaluador(self):
@@ -190,9 +197,6 @@ class RespuestaObjetivo (models.Model):
 
 
 
-
-
-
 #### TABLA DE COMPETENCIAS 
 class Competencia (models.Model):
     nombre = models.CharField(max_length=150)
@@ -208,6 +212,10 @@ class Competencia (models.Model):
     def __str__ (self):
         return f'{self.nombre}'   
     
+    
+    
+    
+    
 class Pregunta (models.Model): 
     competencia = models.ForeignKey(Competencia, related_name="preguntas", on_delete=models.SET_NULL, null=True)
 
@@ -218,6 +226,10 @@ class Pregunta (models.Model):
     
     class Meta:
         verbose_name = "Definición"
+                    
+                    
+                    
+                    
                     
 class RespuestaCompetencia (models.Model):
     evaluacion = models.ForeignKey(
@@ -233,13 +245,8 @@ class RespuestaCompetencia (models.Model):
     
     porcentaje_evaluador = models.IntegerField(verbose_name="Porcentaje de desarrollo", help_text="Valor de desarrollo de la competencia", null=True, blank=True)
   
-  
-    
-  
     def __str__ (self):
-        return self.pregunta.competencia.nombre
-    
-    
+        return self.pregunta.competencia.nombre   
     
     class Meta:
         verbose_name_plural = "Respuestas a las Competencias"
