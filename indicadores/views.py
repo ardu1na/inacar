@@ -27,7 +27,7 @@ def nueva_evaluacion(request):
 # si es operativo que  no muestre objetivos sino competencias
     empleado = request.user.empleado
 
-    if request.method == "GET":
+    if request.method == "GET": # crear una nueva instancia al empezar 
         evaluacion = Evaluacion.objects.create(empleado=empleado, lider=empleado.lider)
 
 

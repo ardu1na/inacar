@@ -1,10 +1,28 @@
-    <h4>HOLA {{empleado}}</h4>
+{% if request.user.empleado %} 
+    <h4>HOLA {{empleado}} </h4>
     <a href="{% url 'nueva_evaluacion' %}"> ++ NUEVA</a>
 
     <br>
     {% for evaluacion in evaluaciones.all %}
-    <a href="#">{{evaluacion}}</a>
+        <ul>
+            <li>
+                <a href="#">{{evaluacion}}</a>
+            </li>
+        </ul>
     {% endfor %}
+
+{% else %}
+{% if request.user.lider %}
+ {% comment "" %} 
+                    AQUI ANTES PRIMERO MOSTRAR LOS EMPLEADOS 
+                    Y LUEGO DE ENTRAR A EMPLEADOS VER
+                    LAS EVALUACIONES DE CADA EMPLEADO 
+{% endcomment %}
+
+{% else %}
+Tu usuario no es lider ni empleado
+{% endif %}
+{% endif %}
 
 
 

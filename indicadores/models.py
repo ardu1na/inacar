@@ -4,11 +4,6 @@ from django.contrib.auth.models import User
 
 
 class NivelAdministrativo(models.Model):
-    # operativo ------------ solo compentencias   
-    
-    ## tienen diferentes objetivos en funcióno del carggo
-    # estrategico -------------- con objetivos y comptencias
-    ## tactico --------------- con objetivos competencas
     nombre = models.CharField(max_length=230, null=False)
     def __str__(self):
         return self.nombre
@@ -18,7 +13,6 @@ class Cargo(models.Model):
     
     def __str__(self):
         return self.nombre
-
 
 class Lider(models.Model):
     user = models.OneToOneField(User, related_name="lider", on_delete=models.CASCADE)
@@ -53,7 +47,6 @@ class Empleado(models.Model):
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name}'
 
-
 #### INFO DE LA EVALUACION
 class Regional (models.Model):
     nombre = models.CharField(max_length=150)
@@ -64,8 +57,7 @@ class Regional (models.Model):
     class Meta:
         verbose_name = "Regional/Operación"
         verbose_name_plural = "Regionales/Operaciones"
-  
-    
+      
 #### INSTANCIA DE EVALUACION      
 class Evaluacion (models.Model):
     
@@ -83,12 +75,7 @@ class Evaluacion (models.Model):
     class Meta:
         verbose_name_plural = "Evaluaciones"
         
-        
 #### TABLA DE OBJETIVOS
-
-### QUÉ OBJETIVOS TIENE EL CARGO
-## EJ ACUEDUCTO: METER TUBERIAS
-#
 class Objetivo (models.Model):
     nombre = models.CharField(max_length=150)
     descripcion = models.CharField(max_length=950)
@@ -121,20 +108,23 @@ class RespuestaObjetivo (models.Model):
     class Meta:
         verbose_name_plural = "Respuestas a los Objetivos"
         verbose_name = "Respuesta al objetivo"   
-      
 
-
-#### TABLA DE COMPETENCIAS
+#### TABLA DE COMPETENCIAS 
 class Competencia (models.Model):
     nombre = models.CharField(max_length=150)
     definicion = models.CharField(max_length=950)
     
+    nivel_administrativo = models.ForeignKey(
+                NivelAdministrativo,
+                related_name="competencias",
+                on_delete=models.SET_NULL,
+                null=True,
+                blank=True)
+    
     def __str__ (self):
         return f'{self.nombre}'   
     
-        
-
-class Pregunta (models.Model):
+class Pregunta (models.Model): 
     competencia = models.ForeignKey(Competencia, related_name="preguntas", on_delete=models.SET_NULL, null=True)
 
     nombre = models.CharField(max_length=150)
@@ -144,13 +134,6 @@ class Pregunta (models.Model):
     
     class Meta:
         verbose_name = "Definición"
-        
-        
-        
-####### formulario de COMPETENCIAS POST
-                    ### todos tienen las mismas competencias excpeto "gestion humana"
-                    ## si es gestion_humana tiene una competencia
-                    ## gestion_humana es un cargo
                     
 class RespuestaCompetencia (models.Model):
     evaluacion = models.ForeignKey(
