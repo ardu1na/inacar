@@ -1,0 +1,19 @@
+
+    <h4>HOLA {% if request.user.lider %}  {{lider}}
+        {% else %} {% if request.user.director %}   {{director}} 
+        {% else %}
+        Tu usuario no es lider ni director {% endif %}
+        {% endif %} </h4>
+    <a href="{% url 'lider_nueva_evaluacion' %}"> ++ NUEVA</a>
+
+    <br>
+    {% for evaluacion in evaluaciones.all %}
+        <ul>
+            <li>
+                <a href="#">{{evaluacion}}</a>
+            </li>
+        </ul>
+    {% endfor %}
+
+
+

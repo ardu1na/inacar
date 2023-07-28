@@ -1,0 +1,38 @@
+    
+    <h4>{{evaluacion}} Director: {{evaluacion.director}}</h4> 
+    <br>
+        {% comment "" %} RESPONDER NUEVA evaluacion {% endcomment %}
+        {% if forms_objetivo %}
+            formulario de objetivos
+            <form method="post">
+                {% csrf_token %}
+               {% comment "" %} campo oculto para obtener el id de evaluacion al guardar con post {% endcomment %}
+                <input type="hidden" name="evaluacion_id" value="{{ evaluacion.id }}">
+                {% for objetivo, form in forms_objetivo %}
+                    <h2>{{ objetivo }}{{objetivo.descripcion}}</h2>
+                    {% for field in form %}
+                        <div>
+                            {{ field.label_tag }}: {{ field }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                <input type="submit" value="Submit" name="objetivo">
+            </form>
+        
+        
+        {% else %}
+            formulario de competencias
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="evaluacion_id" value="{{ evaluacion.id }}">  
+                {% for pregunta, form_competencia in forms_comptencia %}
+                    <h2>{{ pregunta }}</h2>
+                    {% for field in form_competencia %}
+                        <div>
+                            {{ field.label_tag }}: {{ field }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                <input type="submit" value="Submit" name="competencia">
+            </form>
+        {% endif %}

@@ -82,18 +82,22 @@ class Evaluacion (models.Model):
     
         
     director = models.ForeignKey(
-                                Director, related_name="evaluaciones", on_delete=models.SET_NULL, null=True)
+                                Director, related_name="evaluaciones", on_delete=models.SET_NULL, null=True, blank=True)
         
     lider = models.ForeignKey(
-                                Lider, related_name="evaluaciones", on_delete=models.SET_NULL, null=True)
+                                Lider, related_name="evaluaciones", on_delete=models.SET_NULL, null=True, blank=True)
     empleado = models.ForeignKey(
-                                Empleado, related_name="evaluaciones", on_delete=models.SET_NULL, null=True)
+                                Empleado, related_name="evaluaciones", on_delete=models.SET_NULL, null=True, blank=True)
     fecha = models.DateField(
                                 default=date.today())
     
     def __str__ (self):
-        return f'Evaluación {self.id} de {self.empleado} {self.fecha}'
-    
+        if self.empleado:
+            return f'Evaluación {self.id} de {self.empleado} {self.fecha}'
+        else:
+            return f'Evaluación {self.id} de {self.lider} {self.fecha}'
+
+        
     class Meta:
         verbose_name_plural = "Evaluaciones"
         

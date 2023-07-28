@@ -256,20 +256,30 @@ def evaluacion_competencia_lider(request, id):
 
 ############################# EVALUACIONES A LOS LIDERES
 @login_required
-def evaluaciones_lider(request):
+def lider_evaluaciones(request):
     lider = request.user.lider
-    evaluaciones = Evaluacion.objects.filter(lider=lider)
+    evaluaciones = []
+    evaluaciones_del_lider = Evaluacion.objects.filter(lider=lider)
+    for evaluacion_lider in evaluaciones_del_lider:
+        if evaluacion_lider.director:
+            evaluaciones.append(evaluacion_lider)
     context = {
         'lider': lider,
         'evaluaciones': evaluaciones,
     }
 
-    template_name = 'indicadores/evaluaciones.html'
+    template_name = 'indicadores/lider_evaluaciones.html'
     return render(request, template_name, context)
 
 
+
+
+
+
+
+
 @login_required 
-def nueva_evaluacion_lider(request):
+def lider_nueva_evaluacion(request):
 # si es operativo que  no muestre objetivos sino competencias
     lider = request.user.lider
 
@@ -299,7 +309,7 @@ def nueva_evaluacion_lider(request):
                     respuesta.objetivo = objetivo # asociarloo al objetivo
                     respuesta.evaluacion = evaluacion # asociarlo a la evaluacion
                     respuesta.save() #  y ahora si lo guarda posta.
-            return redirect('evaluacion_competencia', id=evaluacion.id)
+            return redirect('lider_evaluacion_competencia', id=evaluacion.id)
             
                 
             """            
@@ -307,16 +317,16 @@ def nueva_evaluacion_lider(request):
             
             """
         context = {
-            'empleado': empleado,
+            'lider': lider,
             'forms_objetivo':forms_objetivo,      
             'evaluacion':evaluacion    
         }
     
     else:         
-        ## si el empleado NO TIENE objetivos asociados       
+        ## si el lider NO TIENE objetivos asociados       
         
         ######## formularios de comptencias get
-        preguntas = Pregunta.objects.filter(competencia__nivel_administrativo=empleado.nivel_administrativo)
+        preguntas = Pregunta.objects.filter(competencia__nivel_administrativo=lider.nivel_administrativo)
         
         forms_competencia = []
         
@@ -335,24 +345,24 @@ def nueva_evaluacion_lider(request):
                     respuesta.pregunta = pregunta # asociarloo a la pregunta
                     respuesta.evaluacion = evaluacion # asociarlo a la evaluacion
                     respuesta.save() #  y ahora si lo guarda posta.
-            return redirect('evaluaciones_empleado')
+            return redirect('lider_evaluaciones')
             
         context = {
-                'empleado': empleado,
+                'lider': lider,
                 'forms_comptencia':forms_competencia, 
                 'evaluacion':evaluacion    
          
             }
 
-    template_name = 'indicadores/evaluacion_empleado.html'
+    template_name = 'indicadores/lider_evaluacion.html'
     return render(request, template_name, context)
 
 @login_required
-def evaluacion_competencia(request, id):
+def lider_evaluacion_competencia(request, id):
     
-    empleado = request.user.empleado
+    lider = request.user.lider
     evaluacion = Evaluacion.objects.get(id=id)
-    preguntas = Pregunta.objects.filter(competencia__nivel_administrativo=empleado.nivel_administrativo)
+    preguntas = Pregunta.objects.filter(competencia__nivel_administrativo=lider.nivel_administrativo)
     forms_competencia = []
     for pregunta in preguntas:
         form_competencia = RespuestaCompetenciaEvaluadoForm(request.POST or None, prefix=f'pregunta_{pregunta.pk}')
@@ -366,18 +376,18 @@ def evaluacion_competencia(request, id):
                 respuesta.pregunta = pregunta # asociarloo a la pregunta
                 respuesta.evaluacion = evaluacion # asociarlo a la evaluacion
                 respuesta.save() #  y ahora si lo guarda posta.
-        return redirect('evaluaciones_empleado')
+        return redirect('lider_evaluaciones')
         
     context = {
-            'empleado': empleado,
+            'lider': lider,
             'forms_comptencia':forms_competencia,          
         }
     
-    template_name = 'indicadores/evaluacion_empleado.html'
+    template_name = 'indicadores/lider_evaluacion.html'
     return render(request, template_name, context)
 
-############################# EVALUACIONES DE LOS LIDERES
-
+############################# EVALUACIONES DE LOS DIRECTORES
+#TODO
 
 
 ## que el lider responda su propio examen

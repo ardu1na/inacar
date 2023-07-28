@@ -1,10 +1,9 @@
 from django.contrib import admin
 from indicadores.models import RespuestaCompetencia, Pregunta, \
     Competencia, RespuestaObjetivo, Objetivo, Evaluacion,\
-    Regional, Empleado, Lider, Cargo, NivelAdministrativo
+    Regional, Empleado, Lider, Cargo, NivelAdministrativo, Director
         
 admin.site.register(Empleado)
-admin.site.register(Cargo)
 admin.site.register(RespuestaObjetivo)
 
 class PreguntaInline(admin.StackedInline):
@@ -23,7 +22,29 @@ class CompetenciaInline(admin.StackedInline):
     model = Competencia
     extra = 0
         
+        
+class ObjetivoInline(admin.StackedInline):
+    model = Objetivo
+    extra = 0
+
+class LiderInline(admin.StackedInline):
+    model = Lider
+    extra = 0
+    
+            
 admin.site.register(Regional)
+
+
+class CargoAdmin(admin.ModelAdmin):
+    inlines = [ObjetivoInline,]
+admin.site.register(Cargo, CargoAdmin)
+
+
+
+class DirectorAdmin(admin.ModelAdmin):
+    inlines = [LiderInline,]
+admin.site.register(Director, DirectorAdmin)
+
 
 class CompetenciaAdmin(admin.ModelAdmin):
     inlines = [PreguntaInline,]

@@ -15,13 +15,20 @@ urlpatterns = [
     
     # LIDER
     
-    ### ver evaluaciones 
-    path('lider/evaluaciones/',views.evaluaciones_lider, name="evaluaciones_lider"),
+    ###  evaluaciones a los empleados
+    path('lider/empleados/evaluaciones/',views.evaluaciones_lider, name="evaluaciones_lider"),
     
     path('lider/evaluacion/<int:id>/',views.responder_evaluacion, name="evaluacion_lider"),
     
     path('lider/evaluacion/<int:id>/continuar/',views.evaluacion_competencia_lider, name="evaluacion_competencia_lider"),
     
+    ###  evaluaciones a si mismo
+        
+    path('lider/evaluaciones/',views.lider_evaluaciones, name="lider_evaluaciones"),
+    
+    path('lider/evaluacion/empezar/',views.lider_nueva_evaluacion, name="lider_nueva_evaluacion"),
+    
+    path('lider/evaluacion/<int:id>/terminar/',views.lider_evaluacion_competencia, name="lider_evaluacion_competencia"),
     
 
  ]
