@@ -15,7 +15,7 @@ class Cargo(models.Model):
         return self.nombre
 
 class Director(models.Model):
-    user = models.OneToOneField(User, related_name="directores", on_delete=models.CASCADE)
+    user = models.OneToOneField(User, related_name="director", on_delete=models.CASCADE)
     cargo = models.ForeignKey(Cargo, on_delete=models.CASCADE, related_name="directores", null=True, blank=False)
 
     def __str__(self):
@@ -117,13 +117,14 @@ class RespuestaObjetivo (models.Model):
     evaluacion = models.ForeignKey(Evaluacion,
                                    related_name="respuestas_objetivo", on_delete=models.CASCADE)
     
-    observaciones_empleado = models.CharField(max_length=950, null=True, blank=True)
+    observaciones_evaluado = models.CharField(max_length=950, null=True, blank=True)
 
-    resultado_empleado = models.IntegerField(null=True, blank=True)
+    resultado_evaluado = models.IntegerField(null=True, blank=True)
     
-    observaciones_lider = models.CharField(max_length=950, null=True, blank=True)
+    observaciones_evaluador = models.CharField(max_length=950, null=True, blank=True)
 
-    resultado_lider = models.IntegerField(null=True, blank=True)
+    resultado_evaluador = models.IntegerField(null=True, blank=True)
+    
     def __str__ (self):
             return f'{self.objetivo}' 
     

@@ -5,27 +5,27 @@ from indicadores.models import RespuestaObjetivo, RespuestaCompetencia
 
 ############### OBJETIVOS
 ## empleado        
-class RespuestaObjetivoEmpleadoForm(ModelForm):
+class RespuestaObjetivoEvaluadoForm(ModelForm):
     
     class Meta:
         model = RespuestaObjetivo
-        fields = ['resultado_empleado', 'observaciones_empleado']        
+        fields = ['resultado_evaluado', 'observaciones_evaluado']        
 ## lider
-class RespuestaObjetivoLiderForm(ModelForm):
+class RespuestaObjetivoEvaluadorForm(ModelForm):
     
     class Meta:
         model = RespuestaObjetivo
-        fields = ['resultado_lider', 'observaciones_lider']        
+        fields = ['resultado_evaluador', 'observaciones_evaluador']        
         
 ############# COMPTENCIAS
 ## empleado        
-class RespuestaCompetenciaEmpleadoForm(ModelForm):
+class RespuestaCompetenciaEvaluadoForm(ModelForm):
     
     class Meta:
         model = RespuestaCompetencia
         fields = ['descripcion_empleado', 'porcentaje_empleado']        
 ## lider
-class RespuestaCompetenciaLiderForm(ModelForm):
+class RespuestaCompetenciaDirectorForm(ModelForm):
     
     class Meta:
         model = RespuestaCompetencia
