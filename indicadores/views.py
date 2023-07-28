@@ -1,11 +1,9 @@
 from django.shortcuts import render, redirect
 from indicadores.models import Evaluacion, RespuestaObjetivo, \
-    Competencia, Pregunta, RespuestaCompetencia
+    Pregunta, RespuestaCompetencia
 from django.contrib.auth.decorators import login_required 
 from indicadores.forms import RespuestaObjetivoEmpleadoForm, RespuestaObjetivoLiderForm, \
     RespuestaCompetenciaEmpleadoForm, RespuestaCompetenciaLiderForm
-from django.http import HttpResponse
-from django.urls import reverse
 
 
 ############################# EVALUACIONES DE LOS EMPLEADOS
@@ -20,7 +18,6 @@ def evaluaciones_empleado(request):
 
     template_name = 'indicadores/evaluaciones.html'
     return render(request, template_name, context)
-
 
 @login_required 
 def nueva_evaluacion(request):
@@ -130,10 +127,14 @@ def evaluacion_competencia(request, id):
     template_name = 'indicadores/evaluacion_empleado.html'
     return render(request, template_name, context)
 
-
-
-
 ############################# EVALUACIONES DE LOS LIDERES
+
+
+
+## que el lider responda su propio examen 
+## que vea los empleados 
+
+
 @login_required
 def evaluaciones_lider(request):
     lider = request.user.lider
@@ -145,6 +146,9 @@ def evaluaciones_lider(request):
 
     template_name = 'indicadores/evaluaciones.html'
     return render(request, template_name, context)
+
+
+
 
 
 
@@ -206,8 +210,6 @@ def responder_evaluacion(request, id):
 
     template_name = 'indicadores/evaluacion_lider.html'
     return render(request, template_name, context)
-
-
 
 @login_required
 def evaluacion_competencia_lider(request, id):

@@ -14,10 +14,28 @@ class Cargo(models.Model):
     def __str__(self):
         return self.nombre
 
+class Director(models.Model):
+    user = models.OneToOneField(User, related_name="directores", on_delete=models.CASCADE)
+    cargo = models.ForeignKey(Cargo, on_delete=models.CASCADE, related_name="directores", null=True, blank=False)
+
+    def __str__(self):
+        return f'{self.user.first_name} {self.user.last_name}'
+
+        
+    @property
+    def get_nombre(self):
+        return self.user.get_full_name
+
 class Lider(models.Model):
     user = models.OneToOneField(User, related_name="lider", on_delete=models.CASCADE)
     cargo = models.ForeignKey(Cargo, on_delete=models.CASCADE, related_name="lideres", null=True, blank=False)
-
+    nivel_administrativo = models.ForeignKey(
+                    NivelAdministrativo, on_delete=models.CASCADE, null=True, related_name="lideres", blank=False
+                    )
+    director = models.ForeignKey(
+                    Director, on_delete=models.CASCADE, null=True, related_name="lideres", blank=False
+                    )
+    
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name}'
 
@@ -61,6 +79,10 @@ class Regional (models.Model):
 #### INSTANCIA DE EVALUACION      
 class Evaluacion (models.Model):
     
+    
+        
+    director = models.ForeignKey(
+                                Director, related_name="evaluaciones", on_delete=models.SET_NULL, null=True)
         
     lider = models.ForeignKey(
                                 Lider, related_name="evaluaciones", on_delete=models.SET_NULL, null=True)

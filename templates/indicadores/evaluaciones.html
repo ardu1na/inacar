@@ -1,5 +1,9 @@
-{% if request.user.empleado %} 
-    <h4>HOLA {{empleado}} </h4>
+
+    <h4>HOLA {% if request.user.empleado %}  {{empleado}}
+        {% else %} {% if request.user.lider %}   {{lider}} 
+        {% else %}
+        Tu usuario no es lider ni empleado {% endif %}
+        {% endif %} </h4>
     <a href="{% url 'nueva_evaluacion' %}"> ++ NUEVA</a>
 
     <br>
@@ -10,19 +14,6 @@
             </li>
         </ul>
     {% endfor %}
-
-{% else %}
-{% if request.user.lider %}
- {% comment "" %} 
-                    AQUI ANTES PRIMERO MOSTRAR LOS EMPLEADOS 
-                    Y LUEGO DE ENTRAR A EMPLEADOS VER
-                    LAS EVALUACIONES DE CADA EMPLEADO 
-{% endcomment %}
-
-{% else %}
-Tu usuario no es lider ni empleado
-{% endif %}
-{% endif %}
 
 
 
