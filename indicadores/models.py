@@ -168,13 +168,13 @@ class RespuestaCompetencia (models.Model):
     pregunta = models.ForeignKey(
                             Pregunta, related_name="respuestas", on_delete=models.SET_NULL, null=True)
     
-    descripcion_empleado = models.CharField(max_length=950, help_text="Descripción del Resultado que soporta la calificación, sobre hechos y datos (ejemplos)", null=True, blank=True)
+    descripcion_evaluado = models.CharField(max_length=950, help_text="Descripción del Resultado que soporta la calificación, sobre hechos y datos (ejemplos)", null=True, blank=True)
     
-    porcentaje_empleado = models.IntegerField(verbose_name="Porcentaje de desarrollo", help_text="Valor de desarrollo de la competencia", null=True, blank=True)
+    porcentaje_evaluado = models.IntegerField(verbose_name="Porcentaje de desarrollo", help_text="Valor de desarrollo de la competencia", null=True, blank=True)
     
-    descripcion_lider = models.CharField(max_length=950, help_text="Descripción del Resultado que soporta la calificación, sobre hechos y datos (ejemplos)", null=True, blank=True)
+    descripcion_evaluador = models.CharField(max_length=950, help_text="Descripción del Resultado que soporta la calificación, sobre hechos y datos (ejemplos)", null=True, blank=True)
     
-    porcentaje_lider = models.IntegerField(verbose_name="Porcentaje de desarrollo", help_text="Valor de desarrollo de la competencia", null=True, blank=True)
+    porcentaje_evaluador = models.IntegerField(verbose_name="Porcentaje de desarrollo", help_text="Valor de desarrollo de la competencia", null=True, blank=True)
   
   
     def __str__ (self):

@@ -2,9 +2,7 @@
    Evaluación: {{evaluacion}}
    <br>
 
-   Lider: {{lider}}
-   <br>
-
+   
    {% if forms_objetivo %}
    formulario de objetivos
 
@@ -13,11 +11,11 @@
         {% csrf_token %}
         {% for respuestaobjetivo, form in forms_objetivo %}
             <h2>{{ respuestaobjetivo }}
-                respuesta del EMPLEADO:
+                respuesta del Lider:
                 <br>
-                {{respuestaobjetivo.resultado_evaluado}}%
+                {{ respuestaobjetivo.resultado_evaluado }}%
                 <br>
-                {{respuestaobjetivo.observaciones_evaluador}}
+                {{ respuestaobjetivo.observaciones_evaluador }}
             </h2>
             {% for field in form %}
                 <div>
@@ -38,12 +36,12 @@
         
         {% for pregunta, form_competencia in forms_comptencia %}
             <h2>{{ pregunta }}</h2>
-            Respuesta Empleado:
+            Respuesta Lider:
             <br>
             {{ pregunta.resultado_evaluado }}%
             <br>
             {{ pregunta.observaciones_evaluador }}
-
+        </h2>
             {% for field in form_competencia %}
                 <div>
                     {{ field.label_tag }}: {{ field }}

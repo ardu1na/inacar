@@ -23,13 +23,13 @@ class RespuestaCompetenciaEvaluadoForm(ModelForm):
     
     class Meta:
         model = RespuestaCompetencia
-        fields = ['descripcion_empleado', 'porcentaje_empleado']        
+        fields = ['descripcion_evaluado', 'porcentaje_evaluado']        
 ## lider
-class RespuestaCompetenciaDirectorForm(ModelForm):
+class RespuestaCompetenciaEvaluadorForm(ModelForm):
     
     class Meta:
         model = RespuestaCompetencia
-        fields = ['descripcion_lider', 'porcentaje_lider']    
+        fields = ['descripcion_evaluador', 'porcentaje_evaluador']    
         """
         
     

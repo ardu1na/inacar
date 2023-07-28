@@ -30,5 +30,13 @@ urlpatterns = [
     
     path('lider/evaluacion/<int:id>/terminar/',views.lider_evaluacion_competencia, name="lider_evaluacion_competencia"),
     
-
+    
+    # DIRECTOR
+    
+    ###  evaluaciones a los lideres
+    path('director/evaluaciones/',views.director_evaluaciones, name="director_evaluaciones"),
+    
+    path('director/evaluacion/<int:id>/',views.evaluar_lider, name="evaluar_lider"),
+    
+    path('director/evaluacion/<int:id>/continuar/',views.evaluacion_competencia_director, name="evaluacion_competencia_director"),
  ]

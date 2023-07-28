@@ -3,9 +3,9 @@ from indicadores.models import Evaluacion, RespuestaObjetivo, \
     Pregunta, RespuestaCompetencia
 from django.contrib.auth.decorators import login_required 
 from indicadores.forms import RespuestaObjetivoEvaluadoForm, RespuestaObjetivoEvaluadorForm, \
-    RespuestaCompetenciaEvaluadoForm, RespuestaCompetenciaDirectorForm
+    RespuestaCompetenciaEvaluadoForm, RespuestaCompetenciaEvaluadorForm
 
-
+from django.http import HttpResponse
 ############################# EVALUACIONES DE LOS EMPLEADOS
 @login_required
 def evaluaciones_empleado(request):
@@ -16,7 +16,7 @@ def evaluaciones_empleado(request):
         'evaluaciones': evaluaciones,
     }
 
-    template_name = 'indicadores/evaluaciones.html'
+    template_name = 'indicadores/empleado_evaluaciones.html'
     return render(request, template_name, context)
 
 @login_required 
@@ -148,12 +148,6 @@ def evaluaciones_lider(request):
     return render(request, template_name, context)
 
 
-
-
-
-
-
-
 @login_required 
 def responder_evaluacion(request, id):
     lider = request.user.lider
@@ -193,12 +187,12 @@ def responder_evaluacion(request, id):
             forms_competencia = []
         
             for pregunta in respuestas_competencia:
-                form_competencia = RespuestaCompetenciaDirectorForm(request.POST or None,instance=pregunta, prefix=f'pregunta_{pregunta.pk}')
+                form_competencia = RespuestaCompetenciaEvaluadorForm(request.POST or None,instance=pregunta, prefix=f'pregunta_{pregunta.pk}')
                 forms_competencia.append((pregunta, form_competencia))
             
         if 'competencia' in request.POST:
             for pregunta, form_competencia in forms_competencia:
-                form_competencia = RespuestaCompetenciaDirectorForm(request.POST,instance=pregunta, prefix=f'pregunta_{pregunta.pk}')
+                form_competencia = RespuestaCompetenciaEvaluadorForm(request.POST,instance=pregunta, prefix=f'pregunta_{pregunta.pk}')
                 if form_competencia.is_valid():
                     form_competencia.save() 
             return redirect('evaluaciones_lider')
@@ -227,12 +221,12 @@ def evaluacion_competencia_lider(request, id):
     forms_competencia = []
 
     for pregunta in respuestas_competencia:
-        form_competencia = RespuestaCompetenciaDirectorForm(request.POST or None,instance=pregunta, prefix=f'pregunta_{pregunta.pk}')
+        form_competencia = RespuestaCompetenciaEvaluadorForm(request.POST or None,instance=pregunta, prefix=f'pregunta_{pregunta.pk}')
         forms_competencia.append((pregunta, form_competencia))
     
     if 'competencia' in request.POST:
         for pregunta, form_competencia in forms_competencia:
-            form_competencia = RespuestaCompetenciaDirectorForm(request.POST,instance=pregunta, prefix=f'pregunta_{pregunta.pk}')
+            form_competencia = RespuestaCompetenciaEvaluadorForm(request.POST,instance=pregunta, prefix=f'pregunta_{pregunta.pk}')
             if form_competencia.is_valid():
                 form_competencia.save() 
         return redirect('evaluaciones_lider')
@@ -255,7 +249,7 @@ def evaluacion_competencia_lider(request, id):
 
 
 ############################# EVALUACIONES A LOS LIDERES
-@login_required
+@login_required # el lider ve las evaluacionoes de sii mismo 
 def lider_evaluaciones(request):
     lider = request.user.lider
     evaluaciones = []
@@ -271,14 +265,7 @@ def lider_evaluaciones(request):
     template_name = 'indicadores/lider_evaluaciones.html'
     return render(request, template_name, context)
 
-
-
-
-
-
-
-
-@login_required 
+@login_required # el lider empieza a autoevaluarse
 def lider_nueva_evaluacion(request):
 # si es operativo que  no muestre objetivos sino competencias
     lider = request.user.lider
@@ -386,36 +373,24 @@ def lider_evaluacion_competencia(request, id):
     template_name = 'indicadores/lider_evaluacion.html'
     return render(request, template_name, context)
 
-############################# EVALUACIONES DE LOS DIRECTORES
-#TODO
+############################# Respuestas DE LOS DIRECTORES
 
-
-## que el lider responda su propio examen
-## que vea los empleados
-
-
-@login_required
-def evaluaciones_lider(request):
-    lider = request.user.lider
-    evaluaciones = Evaluacion.objects.filter(lider=lider)
+@login_required # el director ver las evaluaciones de los lideres
+def director_evaluaciones(request):
+    director = request.user.director
+    evaluaciones = Evaluacion.objects.filter(director=director)
     context = {
-        'lider': lider,
+        'director': director,
         'evaluaciones': evaluaciones,
     }
 
-    template_name = 'indicadores/evaluaciones.html'
+    template_name = 'indicadores/director_evaluaciones.html'
     return render(request, template_name, context)
 
 
-
-
-
-
-
-
 @login_required 
-def responder_evaluacion(request, id):
-    lider = request.user.lider
+def evaluar_lider(request, id):
+    director = request.user.director
     
     evaluacion = Evaluacion.objects.get(id=id) 
     
@@ -435,11 +410,13 @@ def responder_evaluacion(request, id):
                 form_objetivo = RespuestaObjetivoEvaluadorForm(request.POST, instance=respuestaobjetivo, prefix=f'respuestaobjetivo_{respuestaobjetivo.pk}')
                 if form_objetivo.is_valid():
                     form_objetivo.save()
-
-            return redirect('evaluacion_competencia_lider', id=evaluacion.id)
-    
+                else:
+                    return HttpResponse(f'{form_objetivo.errors}')
+            print("aqui se corta")
+            return redirect('evaluacion_competencia_director', id=evaluacion.id)
+            
         context = {
-                'lider': lider,
+                'director': director,
                 'forms_comptencia': forms_objetivo,          
             }
     
@@ -452,32 +429,31 @@ def responder_evaluacion(request, id):
             forms_competencia = []
         
             for pregunta in respuestas_competencia:
-                form_competencia = RespuestaCompetenciaDirectorForm(request.POST or None,instance=pregunta, prefix=f'pregunta_{pregunta.pk}')
+                form_competencia = RespuestaCompetenciaEvaluadorForm(request.POST or None,instance=pregunta, prefix=f'pregunta_{pregunta.pk}')
                 forms_competencia.append((pregunta, form_competencia))
             
         if 'competencia' in request.POST:
             for pregunta, form_competencia in forms_competencia:
-                form_competencia = RespuestaCompetenciaDirectorForm(request.POST,instance=pregunta, prefix=f'pregunta_{pregunta.pk}')
+                form_competencia = RespuestaCompetenciaEvaluadorForm(request.POST,instance=pregunta, prefix=f'pregunta_{pregunta.pk}')
                 if form_competencia.is_valid():
-                    form_competencia.save() 
-            return redirect('evaluaciones_lider')
+                    form_competencia.save()
+                else:
+                    return HttpResponse(f'{form_competencia.errors}')
+ 
+            return redirect('director_evaluaciones')
             
         context = {
-                'lider': lider,
+                'director': director,
                 'forms_comptencia':forms_competencia,          
             }
 
-    template_name = 'indicadores/evaluacion_lider.html'
+    template_name = 'indicadores/evaluacion_director.html'
     return render(request, template_name, context)
 
 @login_required
-def evaluacion_competencia_lider(request, id):
+def evaluacion_competencia_director(request, id):
     
-    
-    
-
-    
-    lider = request.user.lider
+    director = request.user.director
     evaluacion = Evaluacion.objects.get(id=id)
     
     respuestas_competencia = RespuestaCompetencia.objects.filter(evaluacion=evaluacion)
@@ -486,20 +462,23 @@ def evaluacion_competencia_lider(request, id):
     forms_competencia = []
 
     for pregunta in respuestas_competencia:
-        form_competencia = RespuestaCompetenciaDirectorForm(request.POST or None,instance=pregunta, prefix=f'pregunta_{pregunta.pk}')
+        form_competencia = RespuestaCompetenciaEvaluadorForm(request.POST or None,instance=pregunta, prefix=f'pregunta_{pregunta.pk}')
         forms_competencia.append((pregunta, form_competencia))
     
     if 'competencia' in request.POST:
         for pregunta, form_competencia in forms_competencia:
-            form_competencia = RespuestaCompetenciaDirectorForm(request.POST,instance=pregunta, prefix=f'pregunta_{pregunta.pk}')
+            form_competencia = RespuestaCompetenciaEvaluadorForm(request.POST,instance=pregunta, prefix=f'pregunta_{pregunta.pk}')
             if form_competencia.is_valid():
                 form_competencia.save() 
-        return redirect('evaluaciones_lider')
+            else:
+                return HttpResponse(f'{form_competencia.errors}')
+
+        return redirect('director_evaluaciones')
         
     context = {
-            'lider': lider,
+            'director': director,
             'forms_comptencia':forms_competencia,          
         }
     
-    template_name = 'indicadores/evaluacion_lider.html'
+    template_name = 'indicadores/evaluacion_director.html'
     return render(request, template_name, context)
