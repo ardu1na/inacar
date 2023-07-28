@@ -70,8 +70,10 @@ def nueva_evaluacion(request):
         ## si el empleado NO TIENE objetivos asociados       
         
         ######## formularios de comptencias get
-        preguntas = Pregunta.objects.all()
+        preguntas = Pregunta.objects.filter(competencia__nivel_administrativo=empleado.nivel_administrativo)
+        
         forms_competencia = []
+        
         for pregunta in preguntas:
             form_competencia = RespuestaCompetenciaEmpleadoForm(request.POST or None, prefix=f'pregunta_{pregunta.pk}')
             forms_competencia.append((pregunta, form_competencia))
@@ -104,7 +106,7 @@ def evaluacion_competencia(request, id):
     
     empleado = request.user.empleado
     evaluacion = Evaluacion.objects.get(id=id)
-    preguntas = Pregunta.objects.all()
+    preguntas = Pregunta.objects.filter(competencia__nivel_administrativo=empleado.nivel_administrativo)
     forms_competencia = []
     for pregunta in preguntas:
         form_competencia = RespuestaCompetenciaEmpleadoForm(request.POST or None, prefix=f'pregunta_{pregunta.pk}')
