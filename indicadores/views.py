@@ -27,7 +27,8 @@ def nueva_evaluacion(request):
 # si es operativo que  no muestre objetivos sino competencias
     empleado = request.user.empleado
 
-    evaluacion = Evaluacion.objects.create(empleado=empleado, lider=empleado.lider)
+    if request.method == "GET":
+        evaluacion = Evaluacion.objects.create(empleado=empleado, lider=empleado.lider)
 
 
     objetivos = empleado.cargo.objetivos.all() 
@@ -43,6 +44,8 @@ def nueva_evaluacion(request):
             forms_objetivo.append((objetivo, form_objetivo))
             
         if 'objetivo' in request.POST:
+            evaluacion_id = request.POST.get('evaluacion_id')
+            evaluacion = Evaluacion.objects.get(id=evaluacion_id)
             for objetivo, form_objetivo in forms_objetivo:
                 form_objetivo = RespuestaObjetivoEmpleadoForm(request.POST, prefix=f'objetivo_{objetivo.pk}')
                 if form_objetivo.is_valid():
@@ -59,7 +62,8 @@ def nueva_evaluacion(request):
             """
         context = {
             'empleado': empleado,
-            'forms_objetivo':forms_objetivo,          
+            'forms_objetivo':forms_objetivo,      
+            'evaluacion':evaluacion    
         }
     
     else:         
@@ -73,6 +77,9 @@ def nueva_evaluacion(request):
             forms_competencia.append((pregunta, form_competencia))
         
         if 'competencia' in request.POST:
+            evaluacion_id = request.POST.get('evaluacion_id', None)
+            evaluacion = Evaluacion.objects.get(id=evaluacion_id)
+
             for pregunta, form_competencia in forms_competencia:
                 form_competencia = RespuestaCompetenciaEmpleadoForm(request.POST, prefix=f'pregunta_{pregunta.pk}')
                 if form_competencia.is_valid():
@@ -84,7 +91,9 @@ def nueva_evaluacion(request):
             
         context = {
                 'empleado': empleado,
-                'forms_comptencia':forms_competencia,          
+                'forms_comptencia':forms_competencia, 
+                'evaluacion':evaluacion    
+         
             }
 
     template_name = 'indicadores/evaluacion_empleado.html'
