@@ -9,15 +9,15 @@
 
         <form method="post">
         {% csrf_token %}
-        {% for respuestaobjetivo, form in forms_objetivo %}
+        {% for respuestaobjetivo, form_objetivo in forms_objetivo %}
             <h2>{{ respuestaobjetivo }}
                 respuesta del Lider:
                 <br>
                 {{ respuestaobjetivo.resultado_evaluado }}%
                 <br>
-                {{ respuestaobjetivo.observaciones_evaluador }}
+                {{ respuestaobjetivo.observaciones_evaluado }}
             </h2>
-            {% for field in form %}
+            {% for field in form_objetivo %}
                 <div>
                     {{ field.label_tag }}: {{ field }}
                 </div>
@@ -40,7 +40,7 @@
             <br>
             {{ pregunta.resultado_evaluado }}%
             <br>
-            {{ pregunta.observaciones_evaluador }}
+            {{ pregunta.observaciones_evaluado }}
         </h2>
             {% for field in form_competencia %}
                 <div>

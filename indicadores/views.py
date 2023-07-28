@@ -404,15 +404,15 @@ def evaluar_lider(request, id):
             form_objetivo = RespuestaObjetivoEvaluadorForm(instance=respuestaobjetivo, prefix=f'respuestaobjetivo_{respuestaobjetivo.pk}')
             forms_objetivo.append((respuestaobjetivo, form_objetivo))
 
-        if request.method == 'POST' and 'objetivo' in request.POST:
-
+        if request.method == 'POST':
+            print("0")
             for respuestaobjetivo, form_objetivo in forms_objetivo:
                 form_objetivo = RespuestaObjetivoEvaluadorForm(request.POST, instance=respuestaobjetivo, prefix=f'respuestaobjetivo_{respuestaobjetivo.pk}')
                 if form_objetivo.is_valid():
                     form_objetivo.save()
-                else:
-                    return HttpResponse(f'{form_objetivo.errors}')
-            print("aqui se corta")
+                    print("1")
+                print("2")
+            print("3")
             return redirect('evaluacion_competencia_director', id=evaluacion.id)
             
         context = {
