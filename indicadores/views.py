@@ -6,6 +6,38 @@ from indicadores.forms import RespuestaObjetivoEvaluadoForm, RespuestaObjetivoEv
     RespuestaCompetenciaEvaluadoForm, RespuestaCompetenciaEvaluadorForm
 
 from django.http import HttpResponse
+
+
+
+## se hacen dos evaluaciones anuales
+# 1 x semestre
+
+
+## que cuando el empleado vea su tabla de evaluaciones
+##  pueda ver su evaluacion con un boton
+## que aparezcan las variables 
+
+
+# resultado objetivo final:   promedio de todos los objetvios 
+# resultado final compentencias: promedios de las competencias
+
+# RESULTADO FINALA TOTAL: %80 objetivo %20 compentecias
+
+# resultado competencia final:  
+
+## RESULTADO TOTAL (objetivo+compentecia)
+
+## la comptencia tiene subcompetencia y hay que calcular primero un % x competnecia 
+
+# del ev y del evdor
+# x semestre
+
+
+
+
+
+
+
 ############################# EVALUACIONES DE LOS EMPLEADOS
 @login_required
 def evaluaciones_empleado(request):
@@ -405,14 +437,10 @@ def evaluar_lider(request, id):
             forms_objetivo.append((respuestaobjetivo, form_objetivo))
 
         if request.method == 'POST':
-            print("0")
             for respuestaobjetivo, form_objetivo in forms_objetivo:
                 form_objetivo = RespuestaObjetivoEvaluadorForm(request.POST, instance=respuestaobjetivo, prefix=f'respuestaobjetivo_{respuestaobjetivo.pk}')
                 if form_objetivo.is_valid():
                     form_objetivo.save()
-                    print("1")
-                print("2")
-            print("3")
             return redirect('evaluacion_competencia_director', id=evaluacion.id)
             
         context = {

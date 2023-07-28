@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import date
 from django.contrib.auth.models import User
+from django.db.models import Sum
 
 
 class NivelAdministrativo(models.Model):
@@ -77,9 +78,7 @@ class Regional (models.Model):
         verbose_name_plural = "Regionales/Operaciones"
       
 #### INSTANCIA DE EVALUACION      
-class Evaluacion (models.Model):
-    
-    
+class Evaluacion (models.Model):    
         
     director = models.ForeignKey(
                                 Director, related_name="evaluaciones", on_delete=models.SET_NULL, null=True, blank=True)
@@ -100,6 +99,59 @@ class Evaluacion (models.Model):
         
     class Meta:
         verbose_name_plural = "Evaluaciones"
+        
+   
+        
+        
+    @property
+    def get_porcentaje_respuestas_objetivo_evaluado(self):
+        
+        objetivo_total=0
+        n_respuestas = self.respuestas_objetivo.count()    
+        if n_respuestas is None:
+            return 0 
+        
+             # Si no hay respuestas, el porcentaje total es 0
+        
+        # Calcular el porcentaje total
+        else:
+            for respuesta in self.respuestas_objetivo.all():
+                objetivo_total  += respuesta.resultado_evaluado
+        
+            porcentaje_total = (objetivo_total / n_respuestas) 
+        
+            return porcentaje_total
+
+        #### cuando lo quieras renderizar en el template pones:{{evaluacion.get_porcentaje_respuestas_objetivo_evaluado|floatformat:2}}
+
+
+            
+        
+    @property
+    def get_porcentaje_respuestas_objetivo_evaluador(self):
+        
+        objetivo_total=0
+        n_respuestas = 0
+        
+        if n_respuestas is None:
+            return 0 
+        
+             # Si no hay respuestas, el porcentaje total es 0
+        
+        # Calcular el porcentaje total
+        else:
+            for respuesta in self.respuestas_objetivo.all():
+                if respuesta.resultado_evaluador is None:
+                    pass
+                else:
+                    objetivo_total  += respuesta.resultado_evaluador
+                    n_respuestas +=1
+                    
+            porcentaje_total = (objetivo_total / n_respuestas) 
+        
+            return porcentaje_total
+        #### cuando lo quieras renderizar en el template pones:{{evaluacion.get_porcentaje_respuestas_objetivo_evaluador|floatformat:2}}        
+            
         
 #### TABLA DE OBJETIVOS
 class Objetivo (models.Model):
@@ -135,6 +187,11 @@ class RespuestaObjetivo (models.Model):
     class Meta:
         verbose_name_plural = "Respuestas a los Objetivos"
         verbose_name = "Respuesta al objetivo"   
+
+
+
+
+
 
 #### TABLA DE COMPETENCIAS 
 class Competencia (models.Model):
@@ -176,6 +233,8 @@ class RespuestaCompetencia (models.Model):
     
     porcentaje_evaluador = models.IntegerField(verbose_name="Porcentaje de desarrollo", help_text="Valor de desarrollo de la competencia", null=True, blank=True)
   
+  
+    
   
     def __str__ (self):
         return self.pregunta.competencia.nombre

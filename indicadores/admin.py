@@ -68,4 +68,5 @@ admin.site.register(Objetivo)
 
 class EvaluacionAdmin(admin.ModelAdmin):
     inlines = [RespuestaCompetenciaInline, RespuestaObjetivoInline]
+    list_display=['fecha','get_porcentaje_respuestas_objetivo_evaluado', 'get_porcentaje_respuestas_objetivo_evaluador']
 admin.site.register(Evaluacion, EvaluacionAdmin)
