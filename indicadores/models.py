@@ -60,7 +60,7 @@ class InformeAnual(models.Model):
     empleado = models.ForeignKey(
                                 'Empleado', related_name="informes_anuales", on_delete=models.SET_NULL, null=True, blank=True)
     
-    año = models.DateField(default=date.today())
+    periodo = models.DateField(default=date.today(), verbose_name="año")
             
     resultado = models.DecimalField(max_digits=5, decimal_places=2, default=None, null=True, blank=True)
     
@@ -95,6 +95,10 @@ class InformeAnual(models.Model):
             return resultado
         else:
             return None
+        
+        ### ahora hacer que uno se guarde con el otro
+        
+        
         
         
 class Empleado(models.Model):
@@ -195,6 +199,8 @@ class Evaluacion (models.Model):
             self.porcentaje_competencias_evaluador = self.get_porcentaje_competencias_evaluador
         except:
             pass
+        
+        
         super().save(*args, **kwargs)  
         
         

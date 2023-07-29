@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from indicadores.models import Evaluacion, RespuestaObjetivo, \
-    Pregunta, RespuestaCompetencia, Competencia
+    Pregunta, RespuestaCompetencia, Competencia, InformeAnual
 from django.contrib.auth.decorators import login_required 
 from indicadores.forms import RespuestaObjetivoEvaluadoForm, RespuestaObjetivoEvaluadorForm, \
     RespuestaCompetenciaEvaluadoForm, RespuestaCompetenciaEvaluadorForm
@@ -72,9 +72,14 @@ def nueva_evaluacion(request):
 # si es operativo que  no muestre objetivos sino competencias
     empleado = request.user.empleado
 
-    if request.method == "GET": # crear una nueva instancia al empezar 
+    if request.method == "GET": # crear una nueva instancia al empezar
         evaluacion = Evaluacion.objects.create(empleado=empleado, lider=empleado.lider)
-
+        try:
+            informe_anual = InformeAnual.objects.get(empleado=empleado, lider=empleado.lider, periodo__año=evaluacion.fecha.año)
+        except InformeAnual.DoesNotExist:
+            informe_anual =  InformeAnual.objects.create(empleado=empleado, lider=empleado.lider, periodo=evaluacion.fecha)
+        evaluacion.informe_anual=informe_anual
+        evaluacion.save()
 
     objetivos = empleado.cargo.objetivos.all() 
 
@@ -320,7 +325,12 @@ def lider_nueva_evaluacion(request):
 
     if request.method == "GET": # crear una nueva instancia al empezar 
         evaluacion = Evaluacion.objects.create(lider=lider, director=lider.director)
-
+        try:
+            informe_anual = InformeAnual.objects.get(lider=lider, director=lider.director, periodo__año=evaluacion.fecha.año)
+        except InformeAnual.DoesNotExist:
+            informe_anual =  InformeAnual.objects.create(lider=lider, director=lider.director, periodo=evaluacion.fecha)
+        evaluacion.informe_anual=informe_anual
+        evaluacion.save()   
 
     objetivos = lider.cargo.objetivos.all() 
 
