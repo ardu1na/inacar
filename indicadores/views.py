@@ -12,35 +12,7 @@ from django.http import HttpResponse
 ## se hacen dos evaluaciones anuales
 # 1 x semestre
 
-
-## que cuando el empleado vea su tabla de evaluaciones
-##  pueda ver su evaluacion con un boton
-## que aparezcan las variables 
-
-
-# resultado objetivo final:   promedio de todos los objetvios 
-
-# evaluacion.get_promedio: respuesta_objetivos
-
-
-# resultado final compentencias: promedios de las competencias
-
-# RESULTADO FINALA TOTAL: %80 objetivo %20 compentecias
-
-# resultado competencia final:  
-
-
-
-
 ## RESULTADO TOTAL (objetivo+compentecia)
-
-## la comptencia tiene subcompetencia y hay que calcular primero un % x competnecia 
-
-
-
-# evaluacion.respuestacompetnecia
-# 
-
 
 # del ev y del evdor
 # x semestre

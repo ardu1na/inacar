@@ -11,11 +11,12 @@
 
     <body>
         <h1>{{ evaluacion }}</h1>
+        <h2>Resultado final (según el evaluador): {{evaluacion.get_final_total|floatformat:1}}% (los objetivos valen 80 % y las competencias 20 %)</h2>
 
         <hr>
         <br>
 
-        <h2>Objetivos</h2>
+        <h3>Objetivos</h3>
         <br>
         <h3>{{ evaluacion.porcentaje_objetivos_evaluado }} % total ( evaluado)</h3>
         <h3>{{ evaluacion.porcentaje_objetivos_evaluador }} % total ( evaluador)</h3>

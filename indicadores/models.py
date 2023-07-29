@@ -1,7 +1,7 @@
 from django.db import models
 from datetime import date
 from django.contrib.auth.models import User
-from django.db.models import Sum
+from decimal import Decimal
 
 
 class NivelAdministrativo(models.Model):
@@ -98,9 +98,34 @@ class Evaluacion (models.Model):
     porcentaje_competencias_evaluado = models.DecimalField(max_digits=5, decimal_places=2, default=None, null=True, blank=True)
     porcentaje_competencias_evaluador = models.DecimalField(max_digits=5, decimal_places=2, default=None, null=True, blank=True)
     
-    porcentaje_total = models.DecimalField(max_digits=5, decimal_places=2, default=None, null=True, blank=True)
+    resultado_final = models.DecimalField(max_digits=5, decimal_places=2, default=None, null=True, blank=True)
+    
+    
+    # RESULTADO FINAL TOTAL: %80 objetivos %20 compentecias
+    @property
+    def get_final_total(self):
+        objetivos = self.respuestas_objetivo.all()
+        print(objetivos)
+        if objetivos != None:
+            if self.porcentaje_objetivos_evaluador != 0:
+                objetivos = self.porcentaje_objetivos_evaluador * Decimal(0.8)
+            else:
+                objetivos = 0
+            if self.porcentaje_competencias_evaluador != 0:
+                competencias = self.porcentaje_competencias_evaluador * Decimal(0.3)
+            else: 
+                competencias = 0
+            
+            return ( objetivos + competencias )/2
+        else:
+            return self.porcentaje_competencias_evaluador
+    
     
     def save(self, *args, **kwargs):
+        try:
+            self.resultado_final=self.get_final_total
+        except:
+            pass
         try:
             self.porcentaje_objetivos_evaluado = self.get_porcentaje_respuestas_objetivo_evaluado
         except:
@@ -145,8 +170,9 @@ class Evaluacion (models.Model):
         for respuesta in self.respuestas_competencia.all():
             if respuesta.pregunta not in subcompetencias:
                 subcompetencias.append(respuesta.pregunta)
-        return subcompetencias
+        return 
     
+
     @property
     def get_porcentaje_competencias_evaluado(self):
         
