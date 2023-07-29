@@ -45,6 +45,58 @@ class Lider(models.Model):
     def get_nombre(self):
         return self.user.get_full_name
 
+
+
+
+
+class InformeAnual(models.Model):
+    
+
+    director = models.ForeignKey(
+                                Director, related_name="informes_anuales", on_delete=models.SET_NULL, null=True, blank=True)
+        
+    lider = models.ForeignKey(
+                                Lider, related_name="informes_anuales", on_delete=models.SET_NULL, null=True, blank=True)
+    empleado = models.ForeignKey(
+                                'Empleado', related_name="informes_anuales", on_delete=models.SET_NULL, null=True, blank=True)
+    
+    año = models.DateField(default=date.today())
+            
+    resultado = models.DecimalField(max_digits=5, decimal_places=2, default=None, null=True, blank=True)
+    
+    def __str__ (self):
+        
+        if self.empleado:
+            return f'Informe anual {self.año.year} de {self.empleado}'
+        else:
+            return f'Informe anual {self.año.year} de {self.lider}'
+
+        
+    class Meta:
+        verbose_name_plural = "Informes Anuales"
+    
+    def save(self, *args, **kwargs):
+        if self.get_final_total != None:
+            self.resultado = self.get_final_total
+        
+        super().save(*args, **kwargs)  
+    
+    @property
+    def get_final_total(self):
+        evaluaciones = self.evaluaciones.all()
+        total = 0
+        n_evaluaciones = 0
+        if evaluaciones != None:
+            for evaluacion in evaluaciones:
+                if evaluacion.resultado_final != 0:
+                    total += evaluacion.resultado_final
+                    n_evaluaciones += 1
+            resultado = total / n_evaluaciones
+            return resultado
+        else:
+            return None
+        
+        
 class Empleado(models.Model):
     user = models.OneToOneField(
                 User, related_name="empleado", on_delete=models.CASCADE
@@ -65,6 +117,8 @@ class Empleado(models.Model):
 
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name}'
+    
+            
 
 #### INFO DE LA EVALUACION
 class Regional (models.Model):
@@ -79,9 +133,8 @@ class Regional (models.Model):
       
 #### INSTANCIA DE EVALUACION      
 class Evaluacion (models.Model):    
-    
-    ## añadir las variables % evaluador y evaludado de competnecias y subcompetencias y general
-    
+    informe_anual = models.ForeignKey(InformeAnual, on_delete=models.CASCADE, null=True, blank=True, related_name="evaluaciones")
+   
     director = models.ForeignKey(
                                 Director, related_name="evaluaciones", on_delete=models.SET_NULL, null=True, blank=True)
         

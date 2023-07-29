@@ -12,10 +12,6 @@ from django.http import HttpResponse
 ## se hacen dos evaluaciones anuales
 # 1 x semestre
 
-## RESULTADO TOTAL (objetivo+compentecia)
-
-# del ev y del evdor
-# x semestre
 
 
 from django.db.models import Avg
