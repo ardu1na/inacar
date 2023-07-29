@@ -11,13 +11,71 @@
 
     <body>
         <h1>{{ evaluacion }}</h1>
-        <h3>Competencias</h3>
+
+        <hr>
+        <br>
+
+        <h2>Objetivos</h2>
+        <br>
+        <h3>{{ evaluacion.porcentaje_objetivos_evaluado }} % total ( evaluado)</h3>
+        <h3>{{ evaluacion.porcentaje_objetivos_evaluador }} % total ( evaluador)</h3>
+
+        <br>
+
+        <hr>
+            <h4>Objetivo: </h4>
+            <br>
+            <p><strong>Descripción: </strong><p>
+            
+            <br>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Objetivo</th>
+                        <th scope="col">Descripcion</th>
+                        <th scope="col">% Evaluado%</th>
+                        <th scope="col">% del Evaluador</th>
+                    </tr>
+                </thead>
+                <tbody>            {% for respuesta in evaluacion.respuestas_objetivo.all %}
+             
+                    <tr>
+                        <td>{{ respuesta.objetivo.nombre }}</td>
+                        <td>{{ respuesta.objetivo.descripcion }}</td>
+                        <td>{{ respuesta.resultado_evaluado }}%</td>
+                        <td>{{ respuesta.resultado_evaluador }}%</td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+
+            <br>
+
+
         <hr>
 
-        {% for competencia in competencias %}
-            <h4>{{ competencia.nombre }}</h4>
-            <p><strong>Definición general: </strong>{{ competencia.definicion }}<p>
 
+
+
+        <hr>
+        <br>
+
+        <h2>Competencias</h2>
+        <br>
+        <h3>{{ evaluacion.porcentaje_competencias_evaluado }} % total ( evaluado)</h3>
+        <h3>{{ evaluacion.porcentaje_competencias_evaluador }} % total ( evaluador)</h3>
+
+        <br>
+
+        {% for competencia in competencias %}
+        <hr>
+            <h4>Competencia: {{ competencia.nombre }}</h4>
+            <br>
+            <p><strong>Definición general: </strong>{{ competencia.definicion }}<p>
+            <p><strong>Porcentaje final (evaluado): </strong>{{ competencia.overall_percentage }}%</p>
+            <p><strong>Porcentaje final (evaluador): </strong>{{ competencia.overall_percentage }}%</p>
+            <br>
             <table class="table">
                 <thead>
                     <tr>
@@ -49,7 +107,8 @@
                 </tbody>
             </table>
 
-            <h3><strong>Porcentaje final de la competencia con todas sus definiciones según el evaluado: </strong>{{ competencia.overall_percentage }}%</h3>
+            <br>
+
         {% endfor %}
 
         <hr>

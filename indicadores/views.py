@@ -72,7 +72,6 @@ def ver_evaluacion_empleado(request, id):
         'evaluacion': evaluacion,
         'competencias': competencias,
         'subcompetencias': subcompetencias,
-        'respuestas_competencia': respuestas_competencia
     }
 
     return render(request, 'indicadores/ver_evaluacion.html', context)
