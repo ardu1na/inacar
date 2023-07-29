@@ -67,16 +67,16 @@ class InformeAnual(models.Model):
     def __str__ (self):
         
         if self.empleado:
-            return f'Informe anual {self.año.year} de {self.empleado}'
+            return f'Informe anual {self.periodo.year} de {self.empleado}'
         else:
-            return f'Informe anual {self.año.year} de {self.lider}'
+            return f'Informe anual {self.periodo.year} de {self.lider}'
 
         
     class Meta:
         verbose_name_plural = "Informes Anuales"
     
     def save(self, *args, **kwargs):
-        if self.get_final_total != None:
+        if self.pk != None:
             self.resultado = self.get_final_total
         
         super().save(*args, **kwargs)  
@@ -311,6 +311,9 @@ class Evaluacion (models.Model):
 
         return total_porcentaje / total_respuestas
 
+
+
+
         
     @property
     def get_porcentaje_respuestas_objetivo_evaluado(self):
@@ -318,49 +321,60 @@ class Evaluacion (models.Model):
         objetivo_total=0
         n_respuestas = 0
         
-        if n_respuestas is None:
-            return 0 
+    
+    
+    
+        respuestas_objetivo = RespuestaObjetivo.objects.filter(evaluacion=self)
         
-             # Si no hay respuestas, el porcentaje total es 0
+        for respuesta in respuestas_objetivo:
+            if respuesta.resultado_evaluado == None:
+                pass
+            if respuesta.resultado_evaluado == 0:
+                pass
+            else:
+                objetivo_total  += respuesta.resultado_evaluado
+                n_respuestas +=1
+                
+                
+        if objetivo_total == 0 or n_respuestas == 0:
+            return None
         
-        # Calcular el porcentaje total
-        else:
-            for respuesta in self.respuestas_objetivo.all():
-                if respuesta.resultado_evaluado is None:
-                    pass
-                else:
-                    objetivo_total  += respuesta.resultado_evaluado
-                    n_respuestas +=1
-                    
-            porcentaje_total = (objetivo_total / n_respuestas) 
-        
-            return porcentaje_total
-        #### cuando lo quieras renderizar en el template pones:{{evaluacion.get_porcentaje_respuestas_objetivo_evaluador|floatformat:2}}        
+        porcentaje_total = (objetivo_total / n_respuestas) 
+    
+        return porcentaje_total
+
+
+
      
         
     @property
     def get_porcentaje_respuestas_objetivo_evaluador(self):
         
+       
         objetivo_total=0
         n_respuestas = 0
         
-        if n_respuestas is None:
-            return 0 
+    
+    
+    
+        respuestas_objetivo = RespuestaObjetivo.objects.filter(evaluacion=self)
         
-             # Si no hay respuestas, el porcentaje total es 0
+        for respuesta in respuestas_objetivo:
+            if respuesta.resultado_evaluador == None:
+                pass
+            if respuesta.resultado_evaluador == 0:
+                pass
+            else:
+                objetivo_total  += respuesta.resultado_evaluador
+                n_respuestas +=1
+                
+                
+        if objetivo_total == 0 or n_respuestas == 0:
+            return None
         
-        # Calcular el porcentaje total
-        else:
-            for respuesta in self.respuestas_objetivo.all():
-                if respuesta.resultado_evaluador is None:
-                    pass
-                else:
-                    objetivo_total  += respuesta.resultado_evaluador
-                    n_respuestas +=1
-                    
-            porcentaje_total = (objetivo_total / n_respuestas) 
-        
-            return porcentaje_total
+        porcentaje_total = (objetivo_total / n_respuestas) 
+    
+        return porcentaje_total
         #### cuando lo quieras renderizar en el template pones:{{evaluacion.get_porcentaje_respuestas_objetivo_evaluador|floatformat:2}}        
             
 

@@ -1,20 +1,13 @@
 from django.shortcuts import render, redirect
 from indicadores.models import Evaluacion, RespuestaObjetivo, \
-    Pregunta, RespuestaCompetencia, Competencia, InformeAnual
+    Pregunta, RespuestaCompetencia, InformeAnual
 from django.contrib.auth.decorators import login_required 
 from indicadores.forms import RespuestaObjetivoEvaluadoForm, RespuestaObjetivoEvaluadorForm, \
     RespuestaCompetenciaEvaluadoForm, RespuestaCompetenciaEvaluadorForm
-
+from datetime import date
 from django.http import HttpResponse
 
-
-
-## se hacen dos evaluaciones anuales
-# 1 x semestre
-
-
-
-from django.db.models import Avg
+today  = date.today()
 
 @login_required
 def ver_evaluacion_empleado(request, id):
@@ -75,11 +68,11 @@ def nueva_evaluacion(request):
     if request.method == "GET": # crear una nueva instancia al empezar
         evaluacion = Evaluacion.objects.create(empleado=empleado, lider=empleado.lider)
         try:
-            informe_anual = InformeAnual.objects.get(empleado=empleado, lider=empleado.lider, periodo__año=evaluacion.fecha.año)
+            informe_anual = InformeAnual.objects.get(empleado=empleado, lider=empleado.lider, periodo__year=today.year)
+            
         except InformeAnual.DoesNotExist:
             informe_anual =  InformeAnual.objects.create(empleado=empleado, lider=empleado.lider, periodo=evaluacion.fecha)
         evaluacion.informe_anual=informe_anual
-        evaluacion.save()
 
     objetivos = empleado.cargo.objetivos.all() 
 
@@ -325,8 +318,9 @@ def lider_nueva_evaluacion(request):
 
     if request.method == "GET": # crear una nueva instancia al empezar 
         evaluacion = Evaluacion.objects.create(lider=lider, director=lider.director)
+        
         try:
-            informe_anual = InformeAnual.objects.get(lider=lider, director=lider.director, periodo__año=evaluacion.fecha.año)
+            informe_anual = InformeAnual.objects.get(lider=lider, director=lider.director, periodo__year=today.year)
         except InformeAnual.DoesNotExist:
             informe_anual =  InformeAnual.objects.create(lider=lider, director=lider.director, periodo=evaluacion.fecha)
         evaluacion.informe_anual=informe_anual
