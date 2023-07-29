@@ -109,6 +109,14 @@ class Evaluacion (models.Model):
             self.porcentaje_objetivos_evaluador = self.get_porcentaje_respuestas_objetivo_evaluador
         except:
             pass
+        try:
+            self.porcentaje_competencias_evaluado = self.get_porcentaje_competencias_evaluado
+        except:
+            pass
+        try:
+            self.porcentaje_competencias_evaluador = self.get_porcentaje_competencias_evaluador
+        except:
+            pass
         super().save(*args, **kwargs)  
         
         
@@ -175,6 +183,7 @@ class Evaluacion (models.Model):
 
         if total_respuestas == 0:
             return 0
+        return total_porcentaje / total_respuestas
 
 
    
@@ -214,8 +223,6 @@ class Evaluacion (models.Model):
 
         if total_respuestas == 0:
             return 0
-
-        return total_porcentaje / total_respuestas
 
         return total_porcentaje / total_respuestas
 
