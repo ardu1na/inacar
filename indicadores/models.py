@@ -88,7 +88,7 @@ class InformeAnual(models.Model):
         n_evaluaciones = 0
         if evaluaciones != None:
             for evaluacion in evaluaciones:
-                if evaluacion.resultado_final != 0:
+                if evaluacion.resultado_final != 0 and evaluacion.resultado_final != None:
                     total += evaluacion.resultado_final
                     n_evaluaciones += 1
             resultado = total / n_evaluaciones
@@ -164,11 +164,11 @@ class Evaluacion (models.Model):
         objetivos = self.respuestas_objetivo.all()
         print(objetivos)
         if objetivos != None:
-            if self.porcentaje_objetivos_evaluador != 0:
+            if self.porcentaje_objetivos_evaluador != 0 and self.porcentaje_objetivos_evaluador != None:
                 objetivos = self.porcentaje_objetivos_evaluador * Decimal(0.8)
             else:
                 objetivos = 0
-            if self.porcentaje_competencias_evaluador != 0:
+            if self.porcentaje_competencias_evaluador != 0 and self.porcentaje_objetivos_evaluador != None:
                 competencias = self.porcentaje_competencias_evaluador * Decimal(0.3)
             else: 
                 competencias = 0
@@ -229,7 +229,7 @@ class Evaluacion (models.Model):
         for respuesta in self.respuestas_competencia.all():
             if respuesta.pregunta not in subcompetencias:
                 subcompetencias.append(respuesta.pregunta)
-        return 
+        return subcompetencias
     
 
     @property
@@ -362,7 +362,7 @@ class Evaluacion (models.Model):
         for respuesta in respuestas_objetivo:
             if respuesta.resultado_evaluador == None:
                 pass
-            if respuesta.resultado_evaluador == 0:
+            elif respuesta.resultado_evaluador == 0:
                 pass
             else:
                 objetivo_total  += respuesta.resultado_evaluador
