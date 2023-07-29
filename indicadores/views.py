@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from indicadores.models import Evaluacion, RespuestaObjetivo, \
-    Pregunta, RespuestaCompetencia
+    Pregunta, RespuestaCompetencia, Competencia
 from django.contrib.auth.decorators import login_required 
 from indicadores.forms import RespuestaObjetivoEvaluadoForm, RespuestaObjetivoEvaluadorForm, \
     RespuestaCompetenciaEvaluadoForm, RespuestaCompetenciaEvaluadorForm
@@ -46,9 +46,39 @@ from django.http import HttpResponse
 # x semestre
 
 
+from django.db.models import Avg
+
+@login_required
+def ver_evaluacion_empleado(request, id):
+    
+    evaluacion = Evaluacion.objects.get(id=id)
+    
+    competencias = []
+    subcompetencias = []
+    respuestas_competencia = RespuestaCompetencia.objects.filter(evaluacion=evaluacion)
+    
+    for respuesta_competencia in respuestas_competencia:
+        if respuesta_competencia.pregunta.competencia not in competencias:
+            competencias.append(respuesta_competencia.pregunta.competencia)
+        if respuesta_competencia.pregunta not in subcompetencias:
+            subcompetencias.append(respuesta_competencia.pregunta)
+    
+    # calcular el promedio de la comptencia en base a sus subcompetencias para cada competencia. ---> {{competencia.porcentaje_competencia}}%
+    # RespuestaCompetencia.promedio_evaluado <--- tomarlo de este valor
+    # calcular el promedio general de todas las competencias ---- {{competencias.porcentaje_total}}
 
 
+    context = {
+        'evaluacion': evaluacion,
+        'competencias': competencias,
+        'subcompetencias': subcompetencias,
+        'respuestas_competencia': respuestas_competencia
+    }
 
+    return render(request, 'indicadores/ver_evaluacion.html', context)
+
+        
+       
 
 
 ############################# EVALUACIONES DE LOS EMPLEADOS
@@ -63,7 +93,6 @@ def evaluaciones_empleado(request):
 
     template_name = 'indicadores/empleado_evaluaciones.html'
     return render(request, template_name, context)
-
 
 
 

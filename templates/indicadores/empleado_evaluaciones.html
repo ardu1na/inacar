@@ -1,16 +1,12 @@
 
-    <h4>HOLA {% if request.user.empleado %}  {{empleado}}
-        {% else %} {% if request.user.lider %}   {{lider}} 
-        {% else %}
-        Tu usuario no es lider ni empleado {% endif %}
-        {% endif %} </h4>
+    
     <a href="{% url 'nueva_evaluacion' %}"> ++ NUEVA</a>
 
     <br>
     {% for evaluacion in evaluaciones.all %}
         <ul>
             <li>
-                <a href="#">{{evaluacion}}</a>
+                <a href="{% url 'ver_evaluacion_empleado' id=evaluacion.id %}">{{evaluacion}}</a>
             </li>
         </ul>
     {% endfor %}

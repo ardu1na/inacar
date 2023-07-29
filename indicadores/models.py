@@ -79,7 +79,9 @@ class Regional (models.Model):
       
 #### INSTANCIA DE EVALUACION      
 class Evaluacion (models.Model):    
-        
+    
+    ## añadir las variables % evaluador y evaludado de competnecias y subcompetencias y general
+    
     director = models.ForeignKey(
                                 Director, related_name="evaluaciones", on_delete=models.SET_NULL, null=True, blank=True)
         
@@ -90,6 +92,27 @@ class Evaluacion (models.Model):
     fecha = models.DateField(
                                 default=date.today())
     
+    porcentaje_objetivos_evaluado = models.DecimalField(max_digits=5, decimal_places=2, default=None, null=True, blank=True)
+    porcentaje_objetivos_evaluador = models.DecimalField(max_digits=5, decimal_places=2, default=None, null=True, blank=True)
+    
+    porcentaje_competencias_evaluado = models.DecimalField(max_digits=5, decimal_places=2, default=None, null=True, blank=True)
+    porcentaje_competencias_evaluador = models.DecimalField(max_digits=5, decimal_places=2, default=None, null=True, blank=True)
+    
+    porcentaje_total = models.DecimalField(max_digits=5, decimal_places=2, default=None, null=True, blank=True)
+    
+    def save(self, *args, **kwargs):
+        try:
+            self.porcentaje_objetivos_evaluado = self.get_porcentaje_respuestas_objetivo_evaluado
+        except:
+            pass
+        try:
+            self.porcentaje_objetivos_evaluador = self.get_porcentaje_respuestas_objetivo_evaluador
+        except:
+            pass
+        super().save(*args, **kwargs)  
+        
+        
+        
     def __str__ (self):
         if self.empleado:
             return f'Evaluación {self.id} de {self.empleado} {self.fecha}'
@@ -105,7 +128,7 @@ class Evaluacion (models.Model):
         competencias = []
         for respuesta in self.respuestas_competencia.all():
             if respuesta.pregunta.competencia not in competencias:
-                competencias.append(respuesta)
+                competencias.append(respuesta.pregunta.competencia)
         return competencias
         
     @property
@@ -159,6 +182,61 @@ class Evaluacion (models.Model):
             return porcentaje_total
         #### cuando lo quieras renderizar en el template pones:{{evaluacion.get_porcentaje_respuestas_objetivo_evaluador|floatformat:2}}        
             
+
+
+#### TABLA DE COMPETENCIAS 
+class Competencia (models.Model):
+    nombre = models.CharField(max_length=150)
+    definicion = models.CharField(max_length=950)
+    
+    nivel_administrativo = models.ForeignKey(
+                NivelAdministrativo,
+                related_name="competencias",
+                on_delete=models.SET_NULL,
+                null=True,
+                blank=True)
+    
+    def __str__ (self):
+        return f'{self.nombre}'   
+  
+    
+class Pregunta (models.Model): 
+    competencia = models.ForeignKey(Competencia, related_name="preguntas", on_delete=models.SET_NULL, null=True)
+
+    nombre = models.CharField(max_length=150)
+    
+    def __str__ (self):
+        return f'{self.nombre}'
+    
+    class Meta:
+        verbose_name = "Definición"
+                    
+                
+                    
+class RespuestaCompetencia (models.Model):
+    evaluacion = models.ForeignKey(
+                            Evaluacion, related_name="respuestas_competencia", on_delete=models.SET_NULL, null=True)
+    pregunta = models.ForeignKey(
+                            Pregunta, related_name="respuestas", on_delete=models.SET_NULL, null=True)
+    
+    descripcion_evaluado = models.CharField(max_length=950, help_text="Descripción del Resultado que soporta la calificación, sobre hechos y datos (ejemplos)", null=True, blank=True)
+    
+    porcentaje_evaluado = models.IntegerField(verbose_name="Porcentaje de desarrollo", help_text="Valor de desarrollo de la competencia", null=True, blank=True)
+    
+    descripcion_evaluador = models.CharField(max_length=950, help_text="Descripción del Resultado que soporta la calificación, sobre hechos y datos (ejemplos)", null=True, blank=True)
+    
+    porcentaje_evaluador = models.IntegerField(verbose_name="Porcentaje de desarrollo", help_text="Valor de desarrollo de la competencia", null=True, blank=True)
+  
+    def __str__ (self):
+        return self.pregunta.competencia.nombre   
+    
+    class Meta:
+        verbose_name_plural = "Respuestas a las Competencias"
+        verbose_name = "Respuesta"
+        
+        
+        
+        
         
 #### TABLA DE OBJETIVOS
 class Objetivo (models.Model):
@@ -194,60 +272,3 @@ class RespuestaObjetivo (models.Model):
     class Meta:
         verbose_name_plural = "Respuestas a los Objetivos"
         verbose_name = "Respuesta al objetivo"   
-
-
-
-#### TABLA DE COMPETENCIAS 
-class Competencia (models.Model):
-    nombre = models.CharField(max_length=150)
-    definicion = models.CharField(max_length=950)
-    
-    nivel_administrativo = models.ForeignKey(
-                NivelAdministrativo,
-                related_name="competencias",
-                on_delete=models.SET_NULL,
-                null=True,
-                blank=True)
-    
-    def __str__ (self):
-        return f'{self.nombre}'   
-    
-    
-    
-    
-    
-class Pregunta (models.Model): 
-    competencia = models.ForeignKey(Competencia, related_name="preguntas", on_delete=models.SET_NULL, null=True)
-
-    nombre = models.CharField(max_length=150)
-    
-    def __str__ (self):
-        return f'{self.nombre}'
-    
-    class Meta:
-        verbose_name = "Definición"
-                    
-                    
-                    
-                    
-                    
-class RespuestaCompetencia (models.Model):
-    evaluacion = models.ForeignKey(
-                            Evaluacion, related_name="respuestas_competencia", on_delete=models.SET_NULL, null=True)
-    pregunta = models.ForeignKey(
-                            Pregunta, related_name="respuestas", on_delete=models.SET_NULL, null=True)
-    
-    descripcion_evaluado = models.CharField(max_length=950, help_text="Descripción del Resultado que soporta la calificación, sobre hechos y datos (ejemplos)", null=True, blank=True)
-    
-    porcentaje_evaluado = models.IntegerField(verbose_name="Porcentaje de desarrollo", help_text="Valor de desarrollo de la competencia", null=True, blank=True)
-    
-    descripcion_evaluador = models.CharField(max_length=950, help_text="Descripción del Resultado que soporta la calificación, sobre hechos y datos (ejemplos)", null=True, blank=True)
-    
-    porcentaje_evaluador = models.IntegerField(verbose_name="Porcentaje de desarrollo", help_text="Valor de desarrollo de la competencia", null=True, blank=True)
-  
-    def __str__ (self):
-        return self.pregunta.competencia.nombre   
-    
-    class Meta:
-        verbose_name_plural = "Respuestas a las Competencias"
-        verbose_name = "Respuesta"

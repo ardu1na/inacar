@@ -7,7 +7,8 @@ urlpatterns = [
     
     ### ver evaluaciones 
     path('empleado/evaluaciones/',views.evaluaciones_empleado, name="evaluaciones_empleado"),
-    
+    path('empleado/evaluacion/<int:id>/ver/',views.ver_evaluacion_empleado, name="ver_evaluacion_empleado"),
+
     path('empleado/evaluacion/empezar/',views.nueva_evaluacion, name="nueva_evaluacion"),
     path('empleado/evaluacion/<int:id>/continuar/',views.evaluacion_competencia, name="evaluacion_competencia"),
     

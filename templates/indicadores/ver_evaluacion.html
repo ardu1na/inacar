@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    </head>
+
+    <body>
+        <h1>{{ evaluacion }}</h1>
+        <h3>Competencias</h3>
+        <hr>
+
+        {% for competencia in competencias %}
+            <h4>{{ competencia.nombre }}</h4>
+            <p><strong>Definición general: </strong>{{ competencia.definicion }}<p>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">DEFINICIÓN</th>
+                        <th scope="col">% del Evaluado</th>
+                        <th scope="col">Descripción del Evaluado</th>
+                        <th scope="col">% del Evaluador</th>
+                        <th scope="col">Descripción del Evaluador</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for subcompetencia in subcompetencias %}
+                        {% if subcompetencia.competencia == competencia %}
+                            {% for respuesta in evaluacion.respuestas_competencia.all %}
+                            {% if respuesta.pregunta == subcompetencia %}
+
+                        <tr>
+                            <td>{{ subcompetencia.nombre }}</td>
+                            <td>{{ respuesta.porcentaje_evaluado }}%</td>
+                            <td>{{ respuesta.descripcion_evaluado }}</td>
+                            <td>{{ respuesta.porcentaje_evaluador }}%</td>
+                            <td>{{ respuesta.descripcion_evaluador }}</td>
+                        </tr>
+                        {% endif %}
+
+                        {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <h3><strong>Porcentaje final de la competencia con todas sus definiciones según el evaluado: </strong>{{ competencia.overall_percentage }}%</h3>
+        {% endfor %}
+
+        <hr>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    </body>
+</html>
