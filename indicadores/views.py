@@ -13,7 +13,6 @@ today  = date.today()
 def ver_evaluacion_empleado(request, id):
     
     evaluacion = Evaluacion.objects.get(id=id)
-    
     competencias = []
     subcompetencias = []
     respuestas_competencia = RespuestaCompetencia.objects.filter(evaluacion=evaluacion)
@@ -24,11 +23,6 @@ def ver_evaluacion_empleado(request, id):
         if respuesta_competencia.pregunta not in subcompetencias:
             subcompetencias.append(respuesta_competencia.pregunta)
     
-    # calcular el promedio de la comptencia en base a sus subcompetencias para cada competencia. ---> {{competencia.porcentaje_competencia}}%
-    # RespuestaCompetencia.promedio_evaluado <--- tomarlo de este valor
-    # calcular el promedio general de todas las competencias ---- {{competencias.porcentaje_total}}
-
-
     context = {
         'evaluacion': evaluacion,
         'competencias': competencias,
@@ -46,10 +40,24 @@ def ver_evaluacion_empleado(request, id):
 def evaluaciones_empleado(request):
     empleado = request.user.empleado
     evaluaciones = Evaluacion.objects.filter(empleado=empleado)
-    context = {
-        'empleado': empleado,
-        'evaluaciones': evaluaciones,
-    }
+    anio_actual = today.year
+    try:
+        informe_anual = InformeAnual.objects.get(empleado=empleado, periodo__year=anio_actual)
+    
+        context = {
+            'empleado': empleado,
+            'evaluaciones': evaluaciones,
+            'informe_anual': informe_anual,
+            'anio': anio_actual
+            
+        }
+    except InformeAnual.DoesNotExist:
+        context = {
+            'empleado': empleado,
+            'evaluaciones': evaluaciones,
+            'anio': anio_actual
+
+        }
 
     template_name = 'indicadores/empleado_evaluaciones.html'
     return render(request, template_name, context)
@@ -73,7 +81,8 @@ def nueva_evaluacion(request):
         except InformeAnual.DoesNotExist:
             informe_anual =  InformeAnual.objects.create(empleado=empleado, lider=empleado.lider, periodo=evaluacion.fecha)
         evaluacion.informe_anual=informe_anual
-
+        evaluacion.save()
+        informe_anual.save()
     objetivos = empleado.cargo.objetivos.all() 
 
     if objetivos:     ## si el empleado tiene objetivos asociados

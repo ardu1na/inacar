@@ -1,15 +1,28 @@
 
-    
-    <a href="{% url 'nueva_evaluacion' %}"> ++ NUEVA</a>
-
+    <h1> Evaluaciones</h1>
     <br>
+
+
+    <h2>Hola {{self.request.user.get_full_name}}! </h2>
+    <br>
+    {% if informe_anual %}
+    <h3>Balance del {{anio}}: {{informe_anual.get_final_total}} </h3>
+
+
+    {% endif %}
+    <br>
+    <br>
+
+
+    <h4>Historial</h4>     <a class="btn btn-primary mx-4 px-2" href="{% url 'nueva_evaluacion' %}"> ++ NUEVA</a>
+
     {% for evaluacion in evaluaciones.all %}
         <ul>
             <li>
                 <a href="{% url 'ver_evaluacion_empleado' id=evaluacion.id %}">{{evaluacion}}</a>
             </li>
         </ul>
+        <br>
     {% endfor %}
-
 
 

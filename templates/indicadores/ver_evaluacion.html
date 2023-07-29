@@ -10,6 +10,13 @@
     </head>
 
     <body>
+
+        
+    <br>
+    <a class="btn btn-dark mx-4 px-2" href="{% url 'evaluaciones_empleado' %}"> <-- Volver</a>
+    <br>
+
+
         <h1>{{ evaluacion }}</h1>
         <h2>Resultado final (según el evaluador): {{evaluacion.get_final_total|floatformat:1}}% (los objetivos valen 80 % y las competencias 20 %)</h2>
 
