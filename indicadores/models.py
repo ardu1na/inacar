@@ -130,6 +130,95 @@ class Evaluacion (models.Model):
             if respuesta.pregunta.competencia not in competencias:
                 competencias.append(respuesta.pregunta.competencia)
         return competencias
+    
+    @property
+    def get_subcompetencias(self):
+        subcompetencias = []
+        for respuesta in self.respuestas_competencia.all():
+            if respuesta.pregunta not in subcompetencias:
+                subcompetencias.append(respuesta.pregunta)
+        return subcompetencias
+    
+    @property
+    def get_porcentaje_competencias_evaluado(self):
+        
+        total_porcentaje = 0
+        total_respuestas = 0
+
+        competencias = self.get_competencias
+        subcompetencias = self.get_subcompetencias
+        
+        for competencia in competencias:
+            
+            competencia_total = 0
+            n_respuestas = 0
+            
+            compe_subcompetencias = []
+            for sub in subcompetencias:
+                if sub.competencia == competencia:
+                    compe_subcompetencias.append(sub)
+            
+            
+            for subcompetencia in compe_subcompetencias:
+                
+                for respuesta in self.respuestas_competencia.filter(pregunta=subcompetencia):
+                    if respuesta.porcentaje_evaluado is not None:
+                        competencia_total += respuesta.porcentaje_evaluado
+                        n_respuestas += 1
+
+            if n_respuestas > 0:
+                competencia_promedio = competencia_total / n_respuestas
+                
+                total_porcentaje += competencia_promedio
+                total_respuestas += 1
+
+
+        if total_respuestas == 0:
+            return 0
+
+
+   
+    @property
+    def get_porcentaje_competencias_evaluador(self):
+        
+        total_porcentaje = 0
+        total_respuestas = 0
+
+        competencias = self.get_competencias
+        subcompetencias = self.get_subcompetencias
+        
+        for competencia in competencias:
+            
+            competencia_total = 0
+            n_respuestas = 0
+            
+            compe_subcompetencias = []
+            for sub in subcompetencias:
+                if sub.competencia == competencia:
+                    compe_subcompetencias.append(sub)
+            
+            
+            for subcompetencia in compe_subcompetencias:
+                
+                for respuesta in self.respuestas_competencia.filter(pregunta=subcompetencia):
+                    if respuesta.porcentaje_evaluador is not None:
+                        competencia_total += respuesta.porcentaje_evaluador
+                        n_respuestas += 1
+
+            if n_respuestas > 0:
+                competencia_promedio = competencia_total / n_respuestas
+                
+                total_porcentaje += competencia_promedio
+                total_respuestas += 1
+
+
+        if total_respuestas == 0:
+            return 0
+
+        return total_porcentaje / total_respuestas
+
+        return total_porcentaje / total_respuestas
+
         
     @property
     def get_porcentaje_respuestas_objetivo_evaluado(self):
@@ -197,8 +286,7 @@ class Competencia (models.Model):
                 blank=True)
     
     def __str__ (self):
-        return f'{self.nombre}'   
-  
+        return f'{self.nombre}' 
     
 class Pregunta (models.Model): 
     competencia = models.ForeignKey(Competencia, related_name="preguntas", on_delete=models.SET_NULL, null=True)

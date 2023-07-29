@@ -63,8 +63,9 @@
 
         <h2>Competencias</h2>
         <br>
-        <h3>{{ evaluacion.porcentaje_competencias_evaluado }} % total ( evaluado)</h3>
-        <h3>{{ evaluacion.porcentaje_competencias_evaluador }} % total ( evaluador)</h3>
+        <h3>{{ evaluacion.get_porcentaje_competencias_evaluado|floatformat:2 }} % total (evaluado)</h3>
+        <h3>{{ evaluacion.get_porcentaje_competencias_evaluador|floatformat:2 }} % total (evaluador)</h3>
+
 
         <br>
 
@@ -73,8 +74,8 @@
             <h4>Competencia: {{ competencia.nombre }}</h4>
             <br>
             <p><strong>Definición general: </strong>{{ competencia.definicion }}<p>
-            <p><strong>Porcentaje final (evaluado): </strong>{{ competencia.overall_percentage }}%</p>
-            <p><strong>Porcentaje final (evaluador): </strong>{{ competencia.overall_percentage }}%</p>
+            <p><strong>Porcentaje final (evaluado): </strong> #### %</p>
+            <p><strong>Porcentaje final (evaluador): </strong> #### %</p>
             <br>
             <table class="table">
                 <thead>
