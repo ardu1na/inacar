@@ -11,6 +11,8 @@
 
         <form method="post">
         {% csrf_token %}
+        <input type="hidden" name="evaluacion_id" value="{{ evaluacion.id }}">
+
         {% for respuestaobjetivo, form in forms_objetivo %}
             <h2>{{ respuestaobjetivo }}
                 respuesta del EMPLEADO:
@@ -35,7 +37,8 @@
 
     <form method="post">
         {% csrf_token %}
-        
+        <input type="hidden" name="evaluacion_id" value="{{ evaluacion.id }}">
+
         {% for pregunta, form_competencia in forms_comptencia %}
             <h2>{{ pregunta }}</h2>
             Respuesta Empleado:

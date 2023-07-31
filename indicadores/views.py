@@ -199,7 +199,7 @@ def evaluaciones_lider(request):
         'evaluaciones': evaluaciones,
     }
 
-    template_name = 'indicadores/evaluaciones.html'
+    template_name = 'indicadores/empleados_evaluaciones.html'
     return render(request, template_name, context)
 
 
@@ -208,7 +208,7 @@ def responder_evaluacion(request, id):
     lider = request.user.lider
     
     evaluacion = Evaluacion.objects.get(id=id) 
-    
+
     # ver si la evaluacion tiene objetivos
     respuestas_objetivo = RespuestaObjetivo.objects.filter(evaluacion=evaluacion)
     if respuestas_objetivo:
@@ -218,45 +218,27 @@ def responder_evaluacion(request, id):
         for respuestaobjetivo in respuestas_objetivo:
             form_objetivo = RespuestaObjetivoEvaluadorForm(instance=respuestaobjetivo, prefix=f'respuestaobjetivo_{respuestaobjetivo.pk}')
             forms_objetivo.append((respuestaobjetivo, form_objetivo))
+    else: 
+        return redirect('evaluacion_competencia_lider', id=evaluacion.id)
 
-        if request.method == 'POST' and 'objetivo' in request.POST:
+    if request.method == 'POST' and 'objetivo' in request.POST:
+        evaluacion_id = request.POST.get('evaluacion_id')
+        evaluacion = Evaluacion.objects.get(id=evaluacion_id)
 
-            for respuestaobjetivo, form_objetivo in forms_objetivo:
-                form_objetivo = RespuestaObjetivoEvaluadorForm(request.POST, instance=respuestaobjetivo, prefix=f'respuestaobjetivo_{respuestaobjetivo.pk}')
-                if form_objetivo.is_valid():
-                    form_objetivo.save()
+        for respuestaobjetivo, form_objetivo in forms_objetivo:
+            form_objetivo = RespuestaObjetivoEvaluadorForm(request.POST, instance=respuestaobjetivo, prefix=f'respuestaobjetivo_{respuestaobjetivo.pk}')
+            if form_objetivo.is_valid():
+                form_objetivo.save()
 
-            return redirect('evaluacion_competencia_lider', id=evaluacion.id)
+        return redirect('evaluacion_competencia_lider', id=evaluacion.id)
     
-        context = {
+    context = {
                 'lider': lider,
-                'forms_comptencia': forms_objetivo,          
+                'forms_objetivo': forms_objetivo,
+                'evaluacion': evaluacion,          
             }
     
-    else:
-        # si la evaluacion no tiene objetivos
-        respuestas_competencia = RespuestaCompetencia.objects.filter(evaluacion=evaluacion)
-        if respuestas_competencia:
-            
-        ######## formularios de comptencias get
-            forms_competencia = []
-        
-            for pregunta in respuestas_competencia:
-                form_competencia = RespuestaCompetenciaEvaluadorForm(request.POST or None,instance=pregunta, prefix=f'pregunta_{pregunta.pk}')
-                forms_competencia.append((pregunta, form_competencia))
-            
-        if 'competencia' in request.POST:
-            for pregunta, form_competencia in forms_competencia:
-                form_competencia = RespuestaCompetenciaEvaluadorForm(request.POST,instance=pregunta, prefix=f'pregunta_{pregunta.pk}')
-                if form_competencia.is_valid():
-                    form_competencia.save() 
-            return redirect('evaluaciones_lider')
-            
-        context = {
-                'lider': lider,
-                'forms_comptencia':forms_competencia,          
-            }
-
+    
     template_name = 'indicadores/evaluacion_lider.html'
     return render(request, template_name, context)
 
@@ -269,17 +251,19 @@ def evaluacion_competencia_lider(request, id):
     
     lider = request.user.lider
     evaluacion = Evaluacion.objects.get(id=id)
-    
+
     respuestas_competencia = RespuestaCompetencia.objects.filter(evaluacion=evaluacion)
-        
+    
     ######## formularios de comptencias get
     forms_competencia = []
 
     for pregunta in respuestas_competencia:
         form_competencia = RespuestaCompetenciaEvaluadorForm(request.POST or None,instance=pregunta, prefix=f'pregunta_{pregunta.pk}')
         forms_competencia.append((pregunta, form_competencia))
-    
-    if 'competencia' in request.POST:
+
+    if request.method == 'POST' and 'competencia' in request.POST:
+        evaluacion_id = request.POST.get('evaluacion_id')
+        evaluacion = Evaluacion.objects.get(id=evaluacion_id)
         for pregunta, form_competencia in forms_competencia:
             form_competencia = RespuestaCompetenciaEvaluadorForm(request.POST,instance=pregunta, prefix=f'pregunta_{pregunta.pk}')
             if form_competencia.is_valid():
@@ -288,7 +272,8 @@ def evaluacion_competencia_lider(request, id):
         
     context = {
             'lider': lider,
-            'forms_comptencia':forms_competencia,          
+            'forms_comptencia':forms_competencia,
+            'evaluacion': evaluacion,          
         }
     
     template_name = 'indicadores/evaluacion_lider.html'

@@ -1,0 +1,22 @@
+
+    <h1> Evaluaciones</h1>
+    <br>
+
+
+    <h2>Hola {{self.request.user.get_full_name}}! </h2>
+    <br>
+    <br>
+
+
+    <h4>Historial</h4>    
+
+    {% for evaluacion in evaluaciones.all %}
+        <ul>
+            <li>
+                <a href="{% url 'evaluacion_lider' id=evaluacion.id %}">{{evaluacion}}</a>
+            </li>
+        </ul>
+        <br>
+    {% endfor %}
+
+

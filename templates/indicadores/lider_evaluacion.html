@@ -1,5 +1,5 @@
     
-    <h4>{{evaluacion}} Director: {{evaluacion.director}}</h4> 
+    <h4>{{evaluacion}} {%if evaluacion.director %}Director: {{evaluacion.director}}{% endif %}</h4> 
     <br>
         {% comment "" %} RESPONDER NUEVA evaluacion {% endcomment %}
         {% if forms_objetivo %}
@@ -21,6 +21,8 @@
         
         
         {% else %}
+        {% if forms_comptencia %}
+
             formulario de competencias
             <form method="post">
                 {% csrf_token %}
@@ -35,4 +37,5 @@
                 {% endfor %}
                 <input type="submit" value="Submit" name="competencia">
             </form>
+            {% endif %}
         {% endif %}
